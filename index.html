@@ -39,12 +39,18 @@
         <div class="chips"><span id="case-bars">16 BARS</span><span id="case-bpm">♩ 96 BPM</span><span>WAV · 48 KHZ</span></div>
       </div>
 
+      <div class="sample-switch" id="sample-switch" hidden>
+        <span>ACCOMPANIMENT CASE / 选择样例</span>
+        <button class="active" data-accomp-case="283" aria-pressed="true"><strong>283.mid</strong><small>77 BPM · 3 TRACKS</small></button>
+        <button data-accomp-case="057" aria-pressed="false"><strong>057.mid</strong><small>95 → 77 BPM · 3 TRACKS</small></button>
+      </div>
+
       <div class="studio-grid">
         <aside class="track-panel">
           <p class="panel-label">TRACKS / 轨道</p>
-          <button data-track="0"><i style="background:#ff6b4a"></i><span><strong>钢琴</strong><small>Piano</small></span><b>显示</b></button>
-          <button data-track="1"><i style="background:#b9ff66"></i><span><strong>弦乐</strong><small>Strings</small></span><b>显示</b></button>
-          <button data-track="2"><i style="background:#70c8ff"></i><span><strong>贝斯</strong><small>Bass</small></span><b>显示</b></button>
+          <button class="track-button" data-track="0"><i style="background:#ff6b4a"></i><span><strong>钢琴</strong><small>Piano</small></span><b>显示</b></button>
+          <button class="track-button" data-track="1"><i style="background:#b9ff66"></i><span><strong>弦乐</strong><small>Strings</small></span><b>显示</b></button>
+          <button class="track-button" data-track="2"><i style="background:#70c8ff"></i><span><strong>贝斯</strong><small>Bass</small></span><b>显示</b></button>
           <div class="prompt-card"><span>CONDITION</span><p id="case-prompt">8-bar piano prompt</p></div>
         </aside>
 
@@ -62,6 +68,7 @@
             <input id="progress" aria-label="播放进度" type="range" min="0" max="15.5" step="0.01" value="0" />
             <span class="time" id="duration">00:15.5</span>
             <a class="download" id="download" href="./public/audio/continuation.wav" download>↓ WAV</a>
+            <a class="download" id="midi-download" href="#" download hidden>↓ MIDI</a>
           </div>
         </div>
       </div>
@@ -84,6 +91,7 @@
     </section>
     <footer><span>DID MUSIC MODEL / CASE STUDIES</span><span>THREE TASKS · ONE LISTENING SYSTEM</span></footer>
   </main>
+  <script src="./public/data/accompaniment-cases.js"></script>
   <script src="./static-app.js"></script>
 </body>
 </html>
