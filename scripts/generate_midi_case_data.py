@@ -10,7 +10,7 @@ from pathlib import Path
 import miditoolkit
 
 
-TRACK_COLORS = ("#000000", "#666666", "#aaaaaa")
+TRACK_COLORS = ("#ff6b4a", "#b9ff66", "#70c8ff")
 
 
 def tick_to_seconds(tick: int, tempo_changes, ticks_per_beat: int) -> float:

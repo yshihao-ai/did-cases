@@ -17,15 +17,15 @@ type Task = {
 };
 
 const tasks: Task[] = [
-  { id: 'continue', index: '01', label: 'Music Continuation', en: 'Continuation', color: '#000', title: 'Continuation / 634', description: 'A DID music continuation case, presented as the first 32 bars with its original tempo curve.', audio: '/audio/continuation-634.wav', bpm: 95, bars: 32, prompt: 'Continuation case 634 · first 32 bars' },
+  { id: 'continue', index: '01', label: 'Music Continuation', en: 'Continuation', color: '#000', title: 'Continuation / 634', description: 'The first 4 bars are the prompt; bars 5–32 are generated continuation, rendered with the original tempo curve.', audio: '/audio/continuation-634.wav', bpm: 95, bars: 32, prompt: 'Bars 1–4: prompt · bars 5–32: continuation' },
   { id: 'chord', index: '02', label: 'Chord-to-Music', en: 'Chord-conditioned', color: '#000', title: 'Neon After Rain', description: 'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio: '/audio/chord-to-music.wav', bpm: 108, bars: 12, prompt: 'Cm⁹ · A♭maj7 · E♭ · B♭sus4' },
   { id: 'accomp', index: '03', label: 'Accompaniment', en: 'Accompaniment generation', color: '#000', title: 'POP909 Cases', description: 'Accompaniment generation with synchronized MELODY, BRIDGE, and PIANO tracks.', audio: '/audio/accompaniment-283.wav', bpm: 77, bars: 32, prompt: 'POP909 · first 32 bars' },
 ];
 
 const tracks = [
-  { name: 'Piano', label: 'PIANO', color: '#000' },
-  { name: 'Strings', label: 'STRINGS', color: '#666' },
-  { name: 'Bass', label: 'BASS', color: '#aaa' },
+  { name: 'Piano', label: 'PIANO', color: '#ff6b4a' },
+  { name: 'Strings', label: 'STRINGS', color: '#b9ff66' },
+  { name: 'Bass', label: 'BASS', color: '#70c8ff' },
 ];
 
 function formatTime(value: number) {
@@ -112,20 +112,21 @@ export default function Home() {
 
           <div>
             <div className="visualizer" style={{ '--accent': selected.color } as React.CSSProperties}>
-              <div className="visualizer-top"><span>REAL-TIME PIANO ROLL</span><div className="view-switch"><button className={view === 'waterfall' ? 'active' : ''} onClick={() => setView('waterfall')}>FALLING NOTES</button><button className={view === 'timeline' ? 'active' : ''} onClick={() => setView('timeline')}>TIMELINE</button></div></div>
+              <div className="visualizer-top"><span>REAL-TIME PIANO ROLL</span><div className="visualizer-actions">{active === 'continue' && <div className="piano-legend"><span><i className="prompt-color" />PROMPT · BARS 1–4</span><span><i className="continuation-color" />CONTINUATION · BARS 5–32</span></div>}<div className="view-switch"><button className={view === 'waterfall' ? 'active' : ''} onClick={() => setView('waterfall')}>FALLING NOTES</button><button className={view === 'timeline' ? 'active' : ''} onClick={() => setView('timeline')}>TIMELINE</button></div></div></div>
               {view === 'waterfall' ? (
                 <div className="waterfall">
                   <div className="now-line"><span>NOW</span></div>
                   {notes.filter((note) => visibleTracks[note.track]).map((note) => {
                     const y = 270 - (note.start - time) * 54;
-                    return <i key={note.id} className="fall-note" style={{ left: `${((note.pitch - 40) / 48) * 100}%`, top: y, height: Math.max(8, note.length * 54), background: tracks[note.track].color, opacity: y < -60 || y > 340 ? 0 : 1 }} />;
+                    const noteColor = active === 'continue' ? (note.start < 9.1318 ? '#ff6b4a' : '#70c8ff') : tracks[note.track].color;
+                    return <i key={note.id} className="fall-note" style={{ left: `${((note.pitch - 40) / 48) * 100}%`, top: y, height: Math.max(8, note.length * 54), background: noteColor, opacity: y < -60 || y > 340 ? 0 : 1 }} />;
                   })}
                 </div>
               ) : (
                 <div className="roll">
                   <div className="bar-numbers"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span></div>
                   <div className="playhead" style={{ left: `${(time / duration) * 100}%` }}><b>{time.toFixed(1)}s</b></div>
-                  {notes.filter((note) => visibleTracks[note.track]).map((note) => <i key={note.id} className="note" style={{ left: `${(note.start / duration) * 100}%`, top: `${100 - ((note.pitch - 40) / 48) * 88}%`, width: `${Math.max(1.2, (note.length / duration) * 100)}%`, background: tracks[note.track].color }} />)}
+                  {notes.filter((note) => visibleTracks[note.track]).map((note) => <i key={note.id} className="note" style={{ left: `${(note.start / duration) * 100}%`, top: `${100 - ((note.pitch - 40) / 48) * 88}%`, width: `${Math.max(1.2, (note.length / duration) * 100)}%`, background: active === 'continue' ? (note.start < 9.1318 ? '#ff6b4a' : '#70c8ff') : tracks[note.track].color }} />)}
                 </div>
               )}
               <div className="keyboard" aria-hidden="true">{Array.from({ length: 28 }, (_, i) => <i key={i} className={i % 7 === 1 || i % 7 === 3 || i % 7 === 6 ? 'black' : ''} />)}</div>

@@ -9,6 +9,9 @@ from pathlib import Path
 from generate_midi_case_data import tick_to_seconds, trim_midi
 
 
+PROMPT_BARS = 4
+
+
 def build_case(midi, limit_tick: int, bars: int, case_id: str) -> dict:
     tempo_changes = sorted(midi.tempo_changes, key=lambda item: item.time)
     ticks_per_beat = int(midi.ticks_per_beat)
@@ -22,7 +25,7 @@ def build_case(midi, limit_tick: int, bars: int, case_id: str) -> dict:
                 "program": int(instrument.program),
                 "isDrum": bool(instrument.is_drum),
                 "noteCount": len(instrument.notes),
-                "color": "#000000",
+                "color": "#ff6b4a",
             }
         )
         for note in instrument.notes:
@@ -39,16 +42,20 @@ def build_case(midi, limit_tick: int, bars: int, case_id: str) -> dict:
             )
     notes.sort(key=lambda item: (item["start"], item["pitch"], item["track"]))
     initial_bpm = round(float(tempo_changes[0].tempo if tempo_changes else 120.0))
+    prompt_tick = min(PROMPT_BARS * 4 * ticks_per_beat, limit_tick)
+    prompt_duration = round(tick_to_seconds(prompt_tick, tempo_changes, ticks_per_beat), 4)
     return {
         "id": case_id,
         "title": f"Continuation / {case_id}",
-        "description": f"Continuation case {case_id}, limited to the first {bars} bars and rendered with its original tempo curve.",
+        "description": f"The first {PROMPT_BARS} bars are the prompt; bars {PROMPT_BARS + 1}–{bars} are generated continuation, rendered with the original tempo curve.",
         "audio": f"./public/audio/continuation-{case_id}.wav",
         "midi": f"./public/midi/continuation-{case_id}.mid",
         "bpm": initial_bpm,
         "bars": bars,
         "duration": round(tick_to_seconds(limit_tick, tempo_changes, ticks_per_beat), 4),
-        "prompt": f"Continuation case {case_id} · first {bars} bars",
+        "promptBars": PROMPT_BARS,
+        "promptDuration": prompt_duration,
+        "prompt": f"Bars 1–{PROMPT_BARS}: prompt · bars {PROMPT_BARS + 1}–{bars}: continuation",
         "tracks": tracks,
         "notes": notes,
     }

@@ -3,11 +3,12 @@ const tasks = {
   chord: { index:'02', label:'Chord-to-Music', en:'CHORD-CONDITIONED', color:'#000', title:'Neon After Rain', description:'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio:'./public/audio/chord-to-music.wav', bpm:108, bars:12, prompt:'Cm⁹ · A♭maj7 · E♭ · B♭sus4', seed:2 },
   accomp: { index:'03', label:'Accompaniment', en:'ACCOMPANIMENT', color:'#000' }
 };
-const monochromeTracks = ['#000','#666','#aaa'];
+const trackPalette = ['#ff6b4a','#b9ff66','#70c8ff'];
+const continuationColors = { prompt:'#ff6b4a', generated:'#70c8ff' };
 const defaultTracks = [
-  { name:'PIANO', detail:'Piano', color:monochromeTracks[0] },
-  { name:'STRINGS', detail:'Strings', color:monochromeTracks[1] },
-  { name:'BASS', detail:'Bass', color:monochromeTracks[2] }
+  { name:'PIANO', detail:'Piano', color:trackPalette[0] },
+  { name:'STRINGS', detail:'Strings', color:trackPalette[1] },
+  { name:'BASS', detail:'Bass', color:trackPalette[2] }
 ];
 const trackDetails = { MELODY:'Source melody', BRIDGE:'Bridge track', PIANO:'Generated accompaniment' };
 const continuationCases = window.CONTINUATION_CASES || {};
@@ -18,6 +19,7 @@ const progress = document.querySelector('#progress');
 const waterfall = document.querySelector('#waterfall');
 const timeline = document.querySelector('#timeline');
 const playhead = document.querySelector('#playhead');
+const pianoLegend = document.querySelector('#piano-legend');
 const continuationSwitch = document.querySelector('#continuation-switch');
 const accompanimentSwitch = document.querySelector('#accompaniment-switch');
 const visible = [true,true,true];
@@ -68,8 +70,8 @@ function buildNotes(task) {
   notes = (task.notes || makeDemoNotes(task.seed)).map((note,id)=>({...note,id}));
   activeTracks = task.tracks?.map((track,index)=>({
     name:track.name,
-    detail:active === 'continue' && track.name === 'PIANO' ? 'Piano' : trackDetails[track.name] || `Track ${index+1}`,
-    color:monochromeTracks[index%monochromeTracks.length]
+    detail:active === 'continue' && track.name === 'PIANO' ? 'Prompt + continuation' : trackDetails[track.name] || `Track ${index+1}`,
+    color:trackPalette[index%trackPalette.length]
   })) || defaultTracks;
   const pitches = notes.map(note=>note.pitch);
   pitchMin = Math.max(0,Math.min(...pitches)-2);
@@ -78,7 +80,9 @@ function buildNotes(task) {
   waterfall.querySelectorAll('.fall-note').forEach(note=>note.remove());
   timeline.querySelectorAll('.note').forEach(note=>note.remove());
   notes.forEach(note=>{
-    const color = activeTracks[note.track]?.color || '#000';
+    const color = active === 'continue'
+      ? (note.start < (task.promptDuration || 0) ? continuationColors.prompt : continuationColors.generated)
+      : (activeTracks[note.track]?.color || trackPalette[0]);
     const fall=document.createElement('i');
     fall.className='fall-note';
     fall.dataset.track=note.track;
@@ -156,6 +160,7 @@ function updateCase(task,preserveTime=false){
   midiDownload.hidden=!task.midi;
   if(task.midi) midiDownload.href=task.midi;
   document.querySelector('#visualizer').style.setProperty('--accent',task.color);
+  pianoLegend.hidden=active!=='continue';
   document.querySelector('#duration').textContent=format(duration);
   buildNotes(task);
 }
