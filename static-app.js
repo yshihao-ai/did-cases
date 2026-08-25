@@ -22,6 +22,7 @@ let active = 'continue';
 let selectedAccomp = '283';
 let removeMelody = false;
 let pendingSeek = 0;
+let animationFrameId = 0;
 let duration = 15.5;
 let notes = [];
 let activeTracks = defaultTracks;
@@ -73,8 +74,10 @@ function buildNotes(task) {
     fall.style.height=`${Math.max(7,note.length*54)}px`;
     fall.style.background=color;
     fall.style.opacity=String(.35 + (note.velocity || 90)/127*.65);
+    fall.style.visibility='hidden';
     waterfall.appendChild(fall);
     note.fallEl=fall;
+    note.fallVisible=false;
     const bar=document.createElement('i');
     bar.className='note';
     bar.dataset.track=note.track;
@@ -99,23 +102,29 @@ function renderTrackPanel(){
     button.classList.toggle('disabled',!visible[index]);
     button.querySelector('b').textContent=visible[index]?'ON':'OFF';
   });
+  notes.forEach(note=>{if(note.timelineEl)note.timelineEl.style.display=visible[note.track]?'block':'none';});
 }
 function render(){
   const time=audio.currentTime||0;
-  notes.forEach(note=>{
+  if(!waterfall.hidden) notes.forEach(note=>{
     const y=270-(note.start-time)*54;
-    if(note.fallEl){
-      note.fallEl.style.top=`${y}px`;
-      note.fallEl.style.visibility=(visible[note.track]&&y>-80&&y<350)?'visible':'hidden';
+    const shouldShow=visible[note.track]&&y>-80&&y<350;
+    if(shouldShow){
+      note.fallEl.style.transform=`translate3d(0,${y}px,0)`;
+      if(!note.fallVisible){note.fallEl.style.visibility='visible';note.fallVisible=true;}
+    }else if(note.fallVisible){
+      note.fallEl.style.visibility='hidden';
+      note.fallVisible=false;
     }
-    if(note.timelineEl) note.timelineEl.style.display=visible[note.track]?'block':'none';
   });
   playhead.style.left=`${Math.min(100,(time/duration)*100)}%`;
   playhead.querySelector('b').textContent=`${time.toFixed(1)}s`;
   progress.value=time;
   document.querySelector('#current-time').textContent=format(time);
-  if(!audio.paused) requestAnimationFrame(render);
 }
+function animationLoop(){render();animationFrameId=requestAnimationFrame(animationLoop);}
+function startAnimation(){if(!animationFrameId)animationFrameId=requestAnimationFrame(animationLoop);}
+function stopAnimation(){if(animationFrameId)cancelAnimationFrame(animationFrameId);animationFrameId=0;render();}
 function updateCase(task,preserveTime=false){
   pendingSeek=preserveTime ? audio.currentTime : 0;
   audio.pause();
@@ -164,10 +173,10 @@ document.querySelector('#remove-melody').addEventListener('change',event=>{remov
 document.querySelectorAll('[data-track]').forEach(button=>button.addEventListener('click',()=>{const i=Number(button.dataset.track);visible[i]=!visible[i];renderTrackPanel();render();}));
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{const isWaterfall=button.dataset.view==='waterfall';waterfall.hidden=!isWaterfall;timeline.hidden=isWaterfall;document.querySelectorAll('[data-view]').forEach(item=>item.classList.toggle('active',item===button));}));
 play.addEventListener('click',()=>audio.paused?audio.play():audio.pause());
-audio.addEventListener('play',()=>{play.textContent='Ⅱ';play.setAttribute('aria-label','Pause');render();});
-audio.addEventListener('pause',()=>{play.textContent='▶';play.setAttribute('aria-label','Play');});
+audio.addEventListener('play',()=>{play.textContent='Ⅱ';play.setAttribute('aria-label','Pause');startAnimation();});
+audio.addEventListener('pause',()=>{play.textContent='▶';play.setAttribute('aria-label','Play');stopAnimation();});
 audio.addEventListener('loadedmetadata',()=>{duration=audio.duration||duration;progress.max=duration;if(pendingSeek){audio.currentTime=Math.min(pendingSeek,duration);pendingSeek=0;}document.querySelector('#duration').textContent=format(duration);buildNotes(getTask());});
-audio.addEventListener('timeupdate',render);
+audio.addEventListener('timeupdate',()=>{if(audio.paused)render();});
 audio.addEventListener('ended',()=>{audio.currentTime=0;render();});
 progress.addEventListener('input',()=>{audio.currentTime=Number(progress.value);render();});
 document.querySelector('#keyboard').innerHTML=Array.from({length:28},(_,i)=>`<i class="${[1,3,6].includes(i%7)?'black':''}"></i>`).join('');

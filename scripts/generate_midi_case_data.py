@@ -107,7 +107,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", action="append", required=True, type=Path)
     parser.add_argument("--public-dir", required=True, type=Path)
-    parser.add_argument("--bars", type=int, default=64)
+    parser.add_argument("--bars", type=int, default=32)
     args = parser.parse_args()
     public_dir = args.public_dir.resolve()
     midi_dir = public_dir / "midi"

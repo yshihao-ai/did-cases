@@ -19,13 +19,13 @@
   <main>
     <header class="topbar">
       <a class="brand" href="#top" aria-label="DID Music home"><span class="brand-mark">D/</span><span>DID MUSIC</span></a>
-      <nav aria-label="Page navigation"><a href="#cases">Case studies</a><a href="#method">Pipeline</a></nav>
+      <nav aria-label="Page navigation"><a href="#cases">Case studies</a></nav>
       <span class="status"><i></i> MODEL SHOWCASE · 2026</span>
     </header>
 
     <section class="hero" id="top">
-      <div><p class="eyebrow">DID / SYMBOLIC MUSIC GENERATION</p><h1>Music,<br><em>structurally heard.</em></h1></div>
-      <div class="hero-copy"><p class="model-name">DID: 2D Autoregressive Modeling with a Decoder-in-Decoder Architecture for Symbolic Music Generation</p><p>Three generation tasks, presented through a unified listening and visualization system.</p><span>↓ SELECT A TASK TO LISTEN</span></div>
+      <div><p class="eyebrow">DID / SYMBOLIC MUSIC GENERATION</p><h1 class="model-title">DID: <em>2D Autoregressive Modeling with a Decoder-in-Decoder Architecture</em></h1></div>
+      <div class="hero-copy"><p>Continuation, chord-conditioned generation, and accompaniment generation, presented through one synchronized listening and visualization system.</p><span>↓ SELECT A TASK TO LISTEN</span></div>
     </section>
 
     <section class="workspace" id="cases">
@@ -42,8 +42,8 @@
 
       <div class="sample-switch" id="sample-switch" hidden>
         <span>ACCOMPANIMENT CASE</span>
-        <button class="active" data-accomp-case="283" aria-pressed="true"><strong>283.mid</strong><small>64 BARS · 77 BPM</small></button>
-        <button data-accomp-case="057" aria-pressed="false"><strong>057.mid</strong><small>64 BARS · 95 → 77 BPM</small></button>
+        <button class="active" data-accomp-case="283" aria-pressed="true"><strong>283.mid</strong><small>32 BARS · 77 BPM</small></button>
+        <button data-accomp-case="057" aria-pressed="false"><strong>057.mid</strong><small>32 BARS · 95 → 77 BPM</small></button>
         <label class="isolation-toggle">
           <input type="checkbox" id="remove-melody" />
           <span><strong>Remove melody</strong><small>PIANO + BRIDGE ONLY</small></span>
@@ -63,7 +63,7 @@
           <div class="visualizer" id="visualizer">
             <div class="visualizer-top"><span>REAL-TIME PIANO ROLL</span><div class="view-switch"><button class="active" data-view="waterfall">FALLING NOTES</button><button data-view="timeline">TIMELINE</button></div></div>
             <div class="waterfall" id="waterfall"><div class="now-line"><span>NOW</span></div></div>
-            <div class="roll" id="timeline" hidden><div class="bar-numbers"><span>01</span><span>16</span><span>32</span><span>48</span><span>64</span></div><div class="playhead" id="playhead"><b>0.0s</b></div></div>
+            <div class="roll" id="timeline" hidden><div class="bar-numbers"><span>01</span><span>08</span><span>16</span><span>24</span><span>32</span></div><div class="playhead" id="playhead"><b>0.0s</b></div></div>
             <div class="keyboard" aria-hidden="true" id="keyboard"></div>
           </div>
           <div class="transport">
@@ -85,15 +85,6 @@
       </div>
     </section>
 
-    <section class="method" id="method">
-      <div class="method-title"><p class="eyebrow">RECOMMENDED FOUNDATION</p><h2>High-quality audio offline.<br><em>Faithful playback online.</em></h2></div>
-      <div class="pipeline">
-        <article><span>01 / PARSE</span><h3>MIDI timeline</h3><p>Parse notes, velocity, instruments, tempo, and track structure into a unified piano-roll representation.</p><a href="https://github.com/Tonejs/Midi" target="_blank" rel="noreferrer">Tonejs/Midi ↗</a></article>
-        <article><span>02 / RENDER</span><h3>Sampled timbre</h3><p>FluidSynth renders SF2/SF3 instruments offline at 48 kHz, with dynamics, chorus, and reverb preserved.</p><a href="https://github.com/FluidSynth/fluidsynth" target="_blank" rel="noreferrer">FluidSynth ↗</a></article>
-        <article><span>03 / SYNC</span><h3>Audio master clock</h3><p>The piano roll follows the audio element's current time, keeping every note aligned with the rendered result.</p><a href="https://github.com/cifkao/html-midi-player" target="_blank" rel="noreferrer">Visualizer reference ↗</a></article>
-      </div>
-      <div class="quality-note"><strong>Timbre strategy</strong><p>GeneralUser GS provides a consistent General MIDI baseline. Each accompaniment case is rendered as both a full mix and a melody-removed PIANO + BRIDGE mix, then peak-normalized for reliable comparison.</p><span>64 BARS → FLUIDSYNTH → 48 KHZ WAV → WEB AUDIO MASTER CLOCK</span></div>
-    </section>
     <footer><span>DID / CASE STUDIES</span><span>2D AUTOREGRESSIVE MODELING · DECODER-IN-DECODER</span></footer>
   </main>
   <script src="./public/data/accompaniment-cases.js"></script>

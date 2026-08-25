@@ -19,7 +19,7 @@ type Task = {
 const tasks: Task[] = [
   { id: 'continue', index: '01', label: 'Music Continuation', en: 'Continuation', color: '#ff6b4a', title: 'Nocturne in C', description: 'The first eight bars condition the model; the following eight bars are generated.', audio: '/audio/continuation.wav', bpm: 96, bars: 16, prompt: '8-bar piano prompt' },
   { id: 'chord', index: '02', label: 'Chord-to-Music', en: 'Chord-conditioned', color: '#b9ff66', title: 'Neon After Rain', description: 'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio: '/audio/chord-to-music.wav', bpm: 108, bars: 12, prompt: 'Cm⁹ · A♭maj7 · E♭ · B♭sus4' },
-  { id: 'accomp', index: '03', label: 'Accompaniment', en: 'Accompaniment generation', color: '#70c8ff', title: 'POP909 Cases', description: 'Accompaniment generation with synchronized MELODY, BRIDGE, and PIANO tracks.', audio: '/audio/accompaniment-283.wav', bpm: 77, bars: 64, prompt: 'POP909 · first 64 bars' },
+  { id: 'accomp', index: '03', label: 'Accompaniment', en: 'Accompaniment generation', color: '#70c8ff', title: 'POP909 Cases', description: 'Accompaniment generation with synchronized MELODY, BRIDGE, and PIANO tracks.', audio: '/audio/accompaniment-283.wav', bpm: 77, bars: 32, prompt: 'POP909 · first 32 bars' },
 ];
 
 const tracks = [
@@ -84,13 +84,13 @@ export default function Home() {
     <main>
       <header className="topbar">
         <a className="brand" href="#top" aria-label="DID Music home"><span className="brand-mark">D/</span><span>DID MUSIC</span></a>
-        <nav aria-label="Page navigation"><a href="#cases">Case studies</a><a href="#method">Pipeline</a></nav>
+        <nav aria-label="Page navigation"><a href="#cases">Case studies</a></nav>
         <span className="status"><i /> MODEL SHOWCASE · 2026</span>
       </header>
 
       <section className="hero" id="top">
-        <div><p className="eyebrow">DID / SYMBOLIC MUSIC GENERATION</p><h1>Music,<br/><em>structurally heard.</em></h1></div>
-        <div className="hero-copy"><p>DID: 2D Autoregressive Modeling with a Decoder-in-Decoder Architecture for Symbolic Music Generation</p><span>↓ SELECT A TASK TO LISTEN</span></div>
+        <div><p className="eyebrow">DID / SYMBOLIC MUSIC GENERATION</p><h1 className="model-title">DID: <em>2D Autoregressive Modeling with a Decoder-in-Decoder Architecture</em></h1></div>
+        <div className="hero-copy"><p>Continuation, chord-conditioned generation, and accompaniment generation, presented through one synchronized listening and visualization system.</p><span>↓ SELECT A TASK TO LISTEN</span></div>
       </section>
 
       <section className="workspace" id="cases">
@@ -145,16 +145,6 @@ export default function Home() {
         <div className="case-index">
           {tasks.map((task) => <button key={task.id} onClick={() => { setActive(task.id); document.querySelector('#cases')?.scrollIntoView({ behavior: 'smooth' }); }}><span style={{ background: task.color }}>{task.index}</span><div><strong>{task.label}</strong><small>{task.en}</small></div><b>→</b></button>)}
         </div>
-      </section>
-
-      <section className="method" id="method">
-        <div className="method-title"><p className="eyebrow">RECOMMENDED FOUNDATION</p><h2>High-quality audio offline.<br/><em>Faithful playback online.</em></h2></div>
-        <div className="pipeline">
-          <article><span>01 / PARSE</span><h3>MIDI timeline</h3><p>Parse notes, velocity, instruments, tempo, and track structure into a unified piano-roll representation.</p><a href="https://github.com/Tonejs/Midi" target="_blank" rel="noreferrer">Tonejs/Midi ↗</a></article>
-          <article><span>02 / RENDER</span><h3>Sampled timbre</h3><p>FluidSynth renders SF2/SF3 instruments offline at 48 kHz, with dynamics, chorus, and reverb preserved.</p><a href="https://github.com/FluidSynth/fluidsynth" target="_blank" rel="noreferrer">FluidSynth ↗</a></article>
-          <article><span>03 / SYNC</span><h3>Audio master clock</h3><p>The piano roll follows the audio element's current time, keeping every note aligned with the rendered result.</p><a href="https://github.com/cifkao/html-midi-player" target="_blank" rel="noreferrer">Visualizer reference ↗</a></article>
-        </div>
-        <div className="quality-note"><strong>Timbre strategy</strong><p>GeneralUser GS provides a consistent General MIDI baseline, followed by peak normalization for reliable comparison.</p><span>64 BARS → FLUIDSYNTH → 48 KHZ WAV → WEB AUDIO MASTER CLOCK</span></div>
       </section>
 
       <footer><span>DID MUSIC MODEL / CASE STUDIES</span><span>THREE TASKS · ONE LISTENING SYSTEM</span></footer>
