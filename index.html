@@ -36,11 +36,19 @@
       </div>
 
       <div class="case-head">
-        <div><p class="eyebrow" id="case-eyebrow">CASE 01 / CONTINUATION</p><h2 id="case-title">Music Continuation · Nocturne in C</h2><p class="case-description" id="case-description">The first eight bars condition the model; the following eight bars are generated.</p></div>
-        <div class="chips"><span id="case-bars">16 BARS</span><span id="case-bpm">♩ 96 BPM</span><span>WAV · 48 KHZ</span></div>
+        <div><p class="eyebrow" id="case-eyebrow">CASE 01 / CONTINUATION</p><h2 id="case-title">Music Continuation · Continuation / 634</h2><p class="case-description" id="case-description">A DID music continuation case, presented as the first 32 bars with its original tempo curve.</p></div>
+        <div class="chips"><span id="case-bars">32 BARS</span><span id="case-bpm">♩ 95 BPM</span><span>WAV · 48 KHZ</span></div>
       </div>
 
-      <div class="sample-switch" id="sample-switch" hidden>
+      <div class="sample-switch" id="continuation-switch">
+        <span>CONTINUATION CASE</span>
+        <button class="active" data-continuation-case="634" aria-pressed="true"><strong>634.mid</strong><small>32 BARS · 95 BPM</small></button>
+        <button data-continuation-case="335" aria-pressed="false"><strong>335.mid</strong><small>32 BARS · 96 BPM</small></button>
+        <button data-continuation-case="1081" aria-pressed="false"><strong>1081.mid</strong><small>32 BARS · 126 BPM</small></button>
+        <button data-continuation-case="1129" aria-pressed="false"><strong>1129.mid</strong><small>32 BARS · 147 BPM</small></button>
+      </div>
+
+      <div class="sample-switch" id="accompaniment-switch" hidden>
         <span>ACCOMPANIMENT CASE</span>
         <button class="active" data-accomp-case="283" aria-pressed="true"><strong>283.mid</strong><small>32 BARS · 77 BPM</small></button>
         <button data-accomp-case="057" aria-pressed="false"><strong>057.mid</strong><small>32 BARS · 95 → 77 BPM</small></button>
@@ -67,12 +75,12 @@
             <div class="keyboard" aria-hidden="true" id="keyboard"></div>
           </div>
           <div class="transport">
-            <audio id="audio" src="./public/audio/continuation.wav" preload="metadata"></audio>
+            <audio id="audio" src="./public/audio/continuation-634.wav" preload="metadata"></audio>
             <button class="play" id="play" aria-label="Play">▶</button>
             <span class="time" id="current-time">00:00.0</span>
             <input id="progress" aria-label="Playback progress" type="range" min="0" max="15.5" step="0.01" value="0" />
             <span class="time" id="duration">00:15.5</span>
-            <a class="download" id="download" href="./public/audio/continuation.wav" download>↓ WAV</a>
+            <a class="download" id="download" href="./public/audio/continuation-634.wav" download>↓ WAV</a>
             <a class="download" id="midi-download" href="#" download hidden>↓ MIDI</a>
           </div>
         </div>
@@ -87,6 +95,7 @@
 
     <footer><span>DID / CASE STUDIES</span><span>2D AUTOREGRESSIVE MODELING · DECODER-IN-DECODER</span></footer>
   </main>
+  <script src="./public/data/continuation-cases.js"></script>
   <script src="./public/data/accompaniment-cases.js"></script>
   <script src="./static-app.js"></script>
 </body>

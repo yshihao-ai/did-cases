@@ -1,5 +1,5 @@
 const tasks = {
-  continue: { index:'01', label:'Music Continuation', en:'CONTINUATION', color:'#ff6b4a', title:'Nocturne in C', description:'The first eight bars condition the model; the following eight bars are generated.', audio:'./public/audio/continuation.wav', bpm:96, bars:16, prompt:'8-bar piano prompt', seed:1 },
+  continue: { index:'01', label:'Music Continuation', en:'CONTINUATION', color:'#ff6b4a' },
   chord: { index:'02', label:'Chord-to-Music', en:'CHORD-CONDITIONED', color:'#b9ff66', title:'Neon After Rain', description:'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio:'./public/audio/chord-to-music.wav', bpm:108, bars:12, prompt:'Cm⁹ · A♭maj7 · E♭ · B♭sus4', seed:2 },
   accomp: { index:'03', label:'Accompaniment', en:'ACCOMPANIMENT', color:'#70c8ff' }
 };
@@ -9,6 +9,7 @@ const defaultTracks = [
   { name:'BASS', detail:'Bass', color:'#70c8ff' }
 ];
 const trackDetails = { MELODY:'Source melody', BRIDGE:'Bridge track', PIANO:'Generated accompaniment' };
+const continuationCases = window.CONTINUATION_CASES || {};
 const accompanimentCases = window.ACCOMPANIMENT_CASES || {};
 const audio = document.querySelector('#audio');
 const play = document.querySelector('#play');
@@ -16,9 +17,11 @@ const progress = document.querySelector('#progress');
 const waterfall = document.querySelector('#waterfall');
 const timeline = document.querySelector('#timeline');
 const playhead = document.querySelector('#playhead');
-const sampleSwitch = document.querySelector('#sample-switch');
+const continuationSwitch = document.querySelector('#continuation-switch');
+const accompanimentSwitch = document.querySelector('#accompaniment-switch');
 const visible = [true,true,true];
 let active = 'continue';
+let selectedContinuation = '634';
 let selectedAccomp = '283';
 let removeMelody = false;
 let pendingSeek = 0;
@@ -36,6 +39,14 @@ const format = value => {
   return `${String(minutes).padStart(2,'0')}:${seconds.toFixed(1).padStart(4,'0')}`;
 };
 function getTask(id=active) {
+  if (id === 'continue') {
+    const caseData = continuationCases[selectedContinuation] || Object.values(continuationCases)[0];
+    return {
+      ...tasks.continue,
+      ...caseData,
+      title:caseData?.title || `Continuation / ${selectedContinuation}`
+    };
+  }
   if (id !== 'accomp') return tasks[id];
   const caseData = accompanimentCases[selectedAccomp] || Object.values(accompanimentCases)[0];
   const mixDescription = removeMelody ? ' Melody is removed from both audio and visualization; only PIANO and BRIDGE remain.' : ' The full mix includes MELODY, BRIDGE, and PIANO.';
@@ -56,7 +67,7 @@ function buildNotes(task) {
   notes = (task.notes || makeDemoNotes(task.seed)).map((note,id)=>({...note,id}));
   activeTracks = task.tracks?.map((track,index)=>({
     name:track.name,
-    detail:trackDetails[track.name] || `Track ${index+1}`,
+    detail:active === 'continue' && track.name === 'PIANO' ? 'Piano' : trackDetails[track.name] || `Track ${index+1}`,
     color:track.color
   })) || defaultTracks;
   const pitches = notes.map(note=>note.pitch);
@@ -93,9 +104,9 @@ function buildNotes(task) {
   render();
 }
 function renderTrackPanel(){
-  document.querySelectorAll('[data-track]').forEach((button,index)=>{
+  document.querySelectorAll('.track-button[data-track]').forEach((button,index)=>{
     const track=activeTracks[index] || defaultTracks[index];
-    button.hidden=active==='accomp'&&removeMelody&&track.name==='MELODY';
+    button.hidden=index>=activeTracks.length || (active==='accomp'&&removeMelody&&track.name==='MELODY');
     button.querySelector('i').style.background=track.color;
     button.querySelector('strong').textContent=track.name;
     button.querySelector('small').textContent=track.detail;
@@ -154,8 +165,18 @@ function selectTask(id){
     button.classList.toggle('active',on);
     button.setAttribute('aria-selected',String(on));
   });
-  sampleSwitch.hidden=id!=='accomp';
+  continuationSwitch.hidden=id!=='continue';
+  accompanimentSwitch.hidden=id!=='accomp';
   updateCase(getTask(id));
+}
+function selectContinuationCase(id){
+  selectedContinuation=id;
+  document.querySelectorAll('[data-continuation-case]').forEach(button=>{
+    const on=button.dataset.continuationCase===id;
+    button.classList.toggle('active',on);
+    button.setAttribute('aria-pressed',String(on));
+  });
+  if(active==='continue') updateCase(getTask('continue'));
 }
 function selectAccompCase(id){
   selectedAccomp=id;
@@ -168,9 +189,10 @@ function selectAccompCase(id){
 }
 document.querySelectorAll('[data-task]').forEach(button=>button.addEventListener('click',()=>selectTask(button.dataset.task)));
 document.querySelectorAll('[data-jump]').forEach(button=>button.addEventListener('click',()=>{selectTask(button.dataset.jump);document.querySelector('#cases').scrollIntoView({behavior:'smooth'});}));
+document.querySelectorAll('[data-continuation-case]').forEach(button=>button.addEventListener('click',()=>selectContinuationCase(button.dataset.continuationCase)));
 document.querySelectorAll('[data-accomp-case]').forEach(button=>button.addEventListener('click',()=>selectAccompCase(button.dataset.accompCase)));
 document.querySelector('#remove-melody').addEventListener('change',event=>{removeMelody=event.target.checked;if(active==='accomp')updateCase(getTask('accomp'),true);});
-document.querySelectorAll('[data-track]').forEach(button=>button.addEventListener('click',()=>{const i=Number(button.dataset.track);visible[i]=!visible[i];renderTrackPanel();render();}));
+document.querySelectorAll('.track-button[data-track]').forEach(button=>button.addEventListener('click',()=>{const i=Number(button.dataset.track);visible[i]=!visible[i];renderTrackPanel();render();}));
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{const isWaterfall=button.dataset.view==='waterfall';waterfall.hidden=!isWaterfall;timeline.hidden=isWaterfall;document.querySelectorAll('[data-view]').forEach(item=>item.classList.toggle('active',item===button));}));
 play.addEventListener('click',()=>audio.paused?audio.play():audio.pause());
 audio.addEventListener('play',()=>{play.textContent='Ⅱ';play.setAttribute('aria-label','Pause');startAnimation();});
@@ -180,5 +202,6 @@ audio.addEventListener('timeupdate',()=>{if(audio.paused)render();});
 audio.addEventListener('ended',()=>{audio.currentTime=0;render();});
 progress.addEventListener('input',()=>{audio.currentTime=Number(progress.value);render();});
 document.querySelector('#keyboard').innerHTML=Array.from({length:28},(_,i)=>`<i class="${[1,3,6].includes(i%7)?'black':''}"></i>`).join('');
+selectContinuationCase(selectedContinuation);
 selectAccompCase(selectedAccomp);
 selectTask('continue');

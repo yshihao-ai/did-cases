@@ -17,7 +17,7 @@ type Task = {
 };
 
 const tasks: Task[] = [
-  { id: 'continue', index: '01', label: 'Music Continuation', en: 'Continuation', color: '#ff6b4a', title: 'Nocturne in C', description: 'The first eight bars condition the model; the following eight bars are generated.', audio: '/audio/continuation.wav', bpm: 96, bars: 16, prompt: '8-bar piano prompt' },
+  { id: 'continue', index: '01', label: 'Music Continuation', en: 'Continuation', color: '#ff6b4a', title: 'Continuation / 634', description: 'A DID music continuation case, presented as the first 32 bars with its original tempo curve.', audio: '/audio/continuation-634.wav', bpm: 95, bars: 32, prompt: 'Continuation case 634 · first 32 bars' },
   { id: 'chord', index: '02', label: 'Chord-to-Music', en: 'Chord-conditioned', color: '#b9ff66', title: 'Neon After Rain', description: 'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio: '/audio/chord-to-music.wav', bpm: 108, bars: 12, prompt: 'Cm⁹ · A♭maj7 · E♭ · B♭sus4' },
   { id: 'accomp', index: '03', label: 'Accompaniment', en: 'Accompaniment generation', color: '#70c8ff', title: 'POP909 Cases', description: 'Accompaniment generation with synchronized MELODY, BRIDGE, and PIANO tracks.', audio: '/audio/accompaniment-283.wav', bpm: 77, bars: 32, prompt: 'POP909 · first 32 bars' },
 ];

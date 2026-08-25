@@ -33,7 +33,7 @@ h1 em,.method-title em { font-family:Georgia,serif; font-weight:400; }
 .case-description { max-width:670px; margin:12px 0 0; color:#646159; font-size:13px; line-height:1.65; }
 .chips { display:flex; gap:7px; flex-shrink:0; }
 .chips span { padding:8px 11px; border:1px solid var(--line); font-size:9px; letter-spacing:.12em; }
-.sample-switch { display:flex; align-items:stretch; gap:8px; margin:-8px 0 18px; }
+.sample-switch { display:flex; flex-wrap:wrap; align-items:stretch; gap:8px; margin:-8px 0 18px; }
 .sample-switch[hidden] { display:none; }
 .sample-switch>span { display:flex; align-items:center; margin-right:6px; font-size:9px; letter-spacing:.12em; color:#646159; }
 .sample-switch button { display:flex; flex-direction:column; gap:3px; min-width:145px; padding:10px 13px; border:1px solid var(--line); background:transparent; text-align:left; cursor:pointer; }
