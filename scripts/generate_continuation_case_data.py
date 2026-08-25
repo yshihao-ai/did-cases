@@ -22,7 +22,7 @@ def build_case(midi, limit_tick: int, bars: int, case_id: str) -> dict:
                 "program": int(instrument.program),
                 "isDrum": bool(instrument.is_drum),
                 "noteCount": len(instrument.notes),
-                "color": "#ff6b4a",
+                "color": "#000000",
             }
         )
         for note in instrument.notes:

@@ -13,7 +13,7 @@
   <meta name="twitter:description" content="Continuation, chord-to-music, and accompaniment generation with synchronized multi-track piano rolls." />
   <meta name="twitter:image" content="https://yshihao-ai.github.io/did-cases/public/og.png" />
   <link rel="icon" href="./public/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./app/globals.css" />
+  <link rel="stylesheet" href="./app/globals.css?v=mono-1" />
 </head>
 <body>
   <main>
@@ -61,9 +61,9 @@
       <div class="studio-grid">
         <aside class="track-panel">
           <p class="panel-label">TRACKS</p>
-          <button class="track-button" data-track="0"><i style="background:#ff6b4a"></i><span><strong>PIANO</strong><small>Piano</small></span><b>ON</b></button>
-          <button class="track-button" data-track="1"><i style="background:#b9ff66"></i><span><strong>STRINGS</strong><small>Strings</small></span><b>ON</b></button>
-          <button class="track-button" data-track="2"><i style="background:#70c8ff"></i><span><strong>BASS</strong><small>Bass</small></span><b>ON</b></button>
+          <button class="track-button" data-track="0"><i style="background:#000"></i><span><strong>PIANO</strong><small>Piano</small></span><b>ON</b></button>
+          <button class="track-button" data-track="1"><i style="background:#666"></i><span><strong>STRINGS</strong><small>Strings</small></span><b>ON</b></button>
+          <button class="track-button" data-track="2"><i style="background:#aaa"></i><span><strong>BASS</strong><small>Bass</small></span><b>ON</b></button>
           <div class="prompt-card"><span>CONDITION</span><p id="case-prompt">8-bar piano prompt</p></div>
         </aside>
 
@@ -87,16 +87,16 @@
       </div>
 
       <div class="case-index">
-        <button data-jump="continue"><span style="background:#ff6b4a">01</span><div><strong>Music Continuation</strong><small>Continuation</small></div><b>→</b></button>
-        <button data-jump="chord"><span style="background:#b9ff66">02</span><div><strong>Chord-to-Music</strong><small>Chord-conditioned</small></div><b>→</b></button>
-        <button data-jump="accomp"><span style="background:#70c8ff">03</span><div><strong>Accompaniment</strong><small>Accompaniment generation</small></div><b>→</b></button>
+        <button data-jump="continue"><span>01</span><div><strong>Music Continuation</strong><small>Continuation</small></div><b>→</b></button>
+        <button data-jump="chord"><span>02</span><div><strong>Chord-to-Music</strong><small>Chord-conditioned</small></div><b>→</b></button>
+        <button data-jump="accomp"><span>03</span><div><strong>Accompaniment</strong><small>Accompaniment generation</small></div><b>→</b></button>
       </div>
     </section>
 
     <footer><span>DID / CASE STUDIES</span><span>2D AUTOREGRESSIVE MODELING · DECODER-IN-DECODER</span></footer>
   </main>
-  <script src="./public/data/continuation-cases.js"></script>
-  <script src="./public/data/accompaniment-cases.js"></script>
-  <script src="./static-app.js"></script>
+  <script src="./public/data/continuation-cases.js?v=mono-1"></script>
+  <script src="./public/data/accompaniment-cases.js?v=mono-1"></script>
+  <script src="./static-app.js?v=mono-1"></script>
 </body>
 </html>

@@ -1,12 +1,13 @@
 const tasks = {
-  continue: { index:'01', label:'Music Continuation', en:'CONTINUATION', color:'#ff6b4a' },
-  chord: { index:'02', label:'Chord-to-Music', en:'CHORD-CONDITIONED', color:'#b9ff66', title:'Neon After Rain', description:'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio:'./public/audio/chord-to-music.wav', bpm:108, bars:12, prompt:'Cm⁹ · A♭maj7 · E♭ · B♭sus4', seed:2 },
-  accomp: { index:'03', label:'Accompaniment', en:'ACCOMPANIMENT', color:'#70c8ff' }
+  continue: { index:'01', label:'Music Continuation', en:'CONTINUATION', color:'#000' },
+  chord: { index:'02', label:'Chord-to-Music', en:'CHORD-CONDITIONED', color:'#000', title:'Neon After Rain', description:'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio:'./public/audio/chord-to-music.wav', bpm:108, bars:12, prompt:'Cm⁹ · A♭maj7 · E♭ · B♭sus4', seed:2 },
+  accomp: { index:'03', label:'Accompaniment', en:'ACCOMPANIMENT', color:'#000' }
 };
+const monochromeTracks = ['#000','#666','#aaa'];
 const defaultTracks = [
-  { name:'PIANO', detail:'Piano', color:'#ff6b4a' },
-  { name:'STRINGS', detail:'Strings', color:'#b9ff66' },
-  { name:'BASS', detail:'Bass', color:'#70c8ff' }
+  { name:'PIANO', detail:'Piano', color:monochromeTracks[0] },
+  { name:'STRINGS', detail:'Strings', color:monochromeTracks[1] },
+  { name:'BASS', detail:'Bass', color:monochromeTracks[2] }
 ];
 const trackDetails = { MELODY:'Source melody', BRIDGE:'Bridge track', PIANO:'Generated accompaniment' };
 const continuationCases = window.CONTINUATION_CASES || {};
@@ -68,7 +69,7 @@ function buildNotes(task) {
   activeTracks = task.tracks?.map((track,index)=>({
     name:track.name,
     detail:active === 'continue' && track.name === 'PIANO' ? 'Piano' : trackDetails[track.name] || `Track ${index+1}`,
-    color:track.color
+    color:monochromeTracks[index%monochromeTracks.length]
   })) || defaultTracks;
   const pitches = notes.map(note=>note.pitch);
   pitchMin = Math.max(0,Math.min(...pitches)-2);
@@ -77,7 +78,7 @@ function buildNotes(task) {
   waterfall.querySelectorAll('.fall-note').forEach(note=>note.remove());
   timeline.querySelectorAll('.note').forEach(note=>note.remove());
   notes.forEach(note=>{
-    const color = activeTracks[note.track]?.color || '#70c8ff';
+    const color = activeTracks[note.track]?.color || '#000';
     const fall=document.createElement('i');
     fall.className='fall-note';
     fall.dataset.track=note.track;
