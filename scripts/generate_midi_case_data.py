@@ -1,10 +1,10 @@
-"""Convert accompaniment MIDI files into browser-ready piano-roll data."""
+"""Prepare fixed-length accompaniment MIDI files and piano-roll data."""
 
 from __future__ import annotations
 
 import argparse
+import copy
 import json
-import math
 from pathlib import Path
 
 import miditoolkit
@@ -27,14 +27,38 @@ def tick_to_seconds(tick: int, tempo_changes, ticks_per_beat: int) -> float:
     return elapsed + (tick - cursor) / ticks_per_beat * 60.0 / tempo
 
 
-def convert(path: Path, audio_path: str) -> dict:
-    midi = miditoolkit.MidiFile(str(path))
+def trim_midi(source: Path, bars: int) -> tuple[miditoolkit.MidiFile, int]:
+    midi = miditoolkit.MidiFile(str(source))
+    limit_tick = bars * 4 * int(midi.ticks_per_beat)
+    for instrument in midi.instruments:
+        kept_notes = []
+        for note in instrument.notes:
+            if int(note.start) >= limit_tick:
+                continue
+            note.end = min(int(note.end), limit_tick)
+            kept_notes.append(note)
+        instrument.notes = kept_notes
+        instrument.control_changes = [item for item in instrument.control_changes if int(item.time) < limit_tick]
+        instrument.pitch_bends = [item for item in instrument.pitch_bends if int(item.time) < limit_tick]
+        kept_pedals = []
+        for pedal in instrument.pedals:
+            if int(pedal.start) >= limit_tick:
+                continue
+            pedal.end = min(int(pedal.end), limit_tick)
+            kept_pedals.append(pedal)
+        instrument.pedals = kept_pedals
+    midi.tempo_changes = [item for item in midi.tempo_changes if int(item.time) < limit_tick]
+    midi.time_signature_changes = [item for item in midi.time_signature_changes if int(item.time) < limit_tick]
+    midi.key_signature_changes = [item for item in midi.key_signature_changes if int(item.time) < limit_tick]
+    midi.lyrics = [item for item in midi.lyrics if int(item.time) < limit_tick]
+    midi.markers = [item for item in midi.markers if int(item.time) < limit_tick]
+    midi.max_tick = limit_tick
+    return midi, limit_tick
+
+
+def build_case(midi: miditoolkit.MidiFile, limit_tick: int, bars: int, case_id: str) -> dict:
     tempo_changes = sorted(midi.tempo_changes, key=lambda item: item.time)
     ticks_per_beat = int(midi.ticks_per_beat)
-    max_tick = max(
-        (int(note.end) for instrument in midi.instruments for note in instrument.notes),
-        default=int(midi.max_tick),
-    )
     notes = []
     tracks = []
     for track_index, instrument in enumerate(midi.instruments):
@@ -61,20 +85,19 @@ def convert(path: Path, audio_path: str) -> dict:
                 }
             )
     notes.sort(key=lambda item: (item["start"], item["pitch"], item["track"]))
-    duration = tick_to_seconds(max_tick, tempo_changes, ticks_per_beat)
     initial_bpm = round(float(tempo_changes[0].tempo if tempo_changes else 120.0))
-    bars = math.ceil(max_tick / ticks_per_beat / 4)
-    case_id = path.stem
     return {
         "id": case_id,
         "title": f"POP909 / {case_id}",
-        "description": f"完整预测样例 {case_id}：主旋律、桥接声部与模型生成钢琴伴奏同步展示。",
-        "audio": audio_path,
-        "midi": f"./public/midi/{path.name}",
+        "description": f"Case {case_id}, limited to the first {bars} bars, with synchronized melody, bridge, and generated piano accompaniment.",
+        "audioFull": f"./public/audio/accompaniment-{case_id}.wav",
+        "audioNoMelody": f"./public/audio/accompaniment-{case_id}-no-melody.wav",
+        "midiFull": f"./public/midi/{case_id}.mid",
+        "midiNoMelody": f"./public/midi/{case_id}-no-melody.mid",
         "bpm": initial_bpm,
         "bars": bars,
-        "duration": round(duration, 4),
-        "prompt": f"POP909 song {case_id} · full prediction",
+        "duration": round(tick_to_seconds(limit_tick, tempo_changes, ticks_per_beat), 4),
+        "prompt": f"POP909 song {case_id} · first {bars} bars",
         "tracks": tracks,
         "notes": notes,
     }
@@ -82,20 +105,31 @@ def convert(path: Path, audio_path: str) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--midi", action="append", required=True)
-    parser.add_argument("--audio", action="append", required=True)
-    parser.add_argument("--output", required=True)
+    parser.add_argument("--source", action="append", required=True, type=Path)
+    parser.add_argument("--public-dir", required=True, type=Path)
+    parser.add_argument("--bars", type=int, default=64)
     args = parser.parse_args()
-    if len(args.midi) != len(args.audio):
-        parser.error("--midi and --audio must be supplied in matching pairs")
-    cases = {
-        Path(midi_path).stem: convert(Path(midi_path), audio_path)
-        for midi_path, audio_path in zip(args.midi, args.audio)
-    }
-    output = Path(args.output)
-    output.parent.mkdir(parents=True, exist_ok=True)
+    public_dir = args.public_dir.resolve()
+    midi_dir = public_dir / "midi"
+    data_dir = public_dir / "data"
+    midi_dir.mkdir(parents=True, exist_ok=True)
+    data_dir.mkdir(parents=True, exist_ok=True)
+    cases = {}
+    for source in args.source:
+        case_id = source.stem
+        midi, limit_tick = trim_midi(source.resolve(), args.bars)
+        midi.dump(str(midi_dir / f"{case_id}.mid"))
+        no_melody = copy.deepcopy(midi)
+        no_melody.instruments = [
+            instrument for instrument in no_melody.instruments
+            if (instrument.name or "").strip().upper() != "MELODY"
+        ]
+        no_melody.dump(str(midi_dir / f"{case_id}-no-melody.mid"))
+        cases[case_id] = build_case(midi, limit_tick, args.bars, case_id)
     payload = json.dumps(cases, ensure_ascii=False, separators=(",", ":"))
-    output.write_text(f"window.ACCOMPANIMENT_CASES={payload};\n", encoding="utf-8")
+    (data_dir / "accompaniment-cases.js").write_text(
+        f"window.ACCOMPANIMENT_CASES={payload};\n", encoding="utf-8"
+    )
 
 
 if __name__ == "__main__":

@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DID Music Model — Case Studies</title>
-  <meta name="description" content="续写、和弦生成与伴奏生成的多轨音乐模型案例展示。" />
-  <meta property="og:title" content="DID Music Model — Case Studies" />
-  <meta property="og:description" content="听见模型如何思考：三个生成任务的音频与多轨钢琴卷。" />
+  <title>DID — Symbolic Music Generation Case Studies</title>
+  <meta name="description" content="Case studies for DID: 2D Autoregressive Modeling with a Decoder-in-Decoder Architecture for Symbolic Music Generation." />
+  <meta property="og:title" content="DID — Symbolic Music Generation Case Studies" />
+  <meta property="og:description" content="Continuation, chord-to-music, and accompaniment generation with synchronized multi-track piano rolls." />
   <meta property="og:image" content="https://yshihao-ai.github.io/did-cases/public/og.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="DID Music Model — Case Studies" />
-  <meta name="twitter:description" content="听见模型如何思考：三个生成任务的音频与多轨钢琴卷。" />
+  <meta name="twitter:title" content="DID — Symbolic Music Generation Case Studies" />
+  <meta name="twitter:description" content="Continuation, chord-to-music, and accompaniment generation with synchronized multi-track piano rolls." />
   <meta name="twitter:image" content="https://yshihao-ai.github.io/did-cases/public/og.png" />
   <link rel="icon" href="./public/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./app/globals.css" />
@@ -18,55 +18,59 @@
 <body>
   <main>
     <header class="topbar">
-      <a class="brand" href="#top" aria-label="DID Music 首页"><span class="brand-mark">D/</span><span>DID MUSIC MODEL</span></a>
-      <nav aria-label="页面导航"><a href="#cases">Case studies</a><a href="#method">Pipeline</a></nav>
+      <a class="brand" href="#top" aria-label="DID Music home"><span class="brand-mark">D/</span><span>DID MUSIC</span></a>
+      <nav aria-label="Page navigation"><a href="#cases">Case studies</a><a href="#method">Pipeline</a></nav>
       <span class="status"><i></i> MODEL SHOWCASE · 2026</span>
     </header>
 
     <section class="hero" id="top">
-      <div><p class="eyebrow">GENERATIVE MUSIC / THREE TASKS</p><h1>听见模型<br><em>如何思考。</em></h1></div>
-      <div class="hero-copy"><p>三个任务，一套统一的听觉与视觉语言。播放高质量离线渲染音频，同时检查结构、生成边界与每一条轨道。</p><span>↓ 选择任务开始试听</span></div>
+      <div><p class="eyebrow">DID / SYMBOLIC MUSIC GENERATION</p><h1>Music,<br><em>structurally heard.</em></h1></div>
+      <div class="hero-copy"><p class="model-name">DID: 2D Autoregressive Modeling with a Decoder-in-Decoder Architecture for Symbolic Music Generation</p><p>Three generation tasks, presented through a unified listening and visualization system.</p><span>↓ SELECT A TASK TO LISTEN</span></div>
     </section>
 
     <section class="workspace" id="cases">
-      <div class="task-tabs" role="tablist" aria-label="生成任务">
-        <button role="tab" aria-selected="true" class="active" data-task="continue"><span>01</span><strong>音乐续写</strong><small>Continuation</small></button>
-        <button role="tab" aria-selected="false" data-task="chord"><span>02</span><strong>和弦生成</strong><small>Chord → Music</small></button>
-        <button role="tab" aria-selected="false" data-task="accomp"><span>03</span><strong>伴奏生成</strong><small>Accompaniment</small></button>
+      <div class="task-tabs" role="tablist" aria-label="Generation tasks">
+        <button role="tab" aria-selected="true" class="active" data-task="continue"><span>01</span><strong>Music Continuation</strong><small>Continuation</small></button>
+        <button role="tab" aria-selected="false" data-task="chord"><span>02</span><strong>Chord-to-Music</strong><small>Chord-conditioned</small></button>
+        <button role="tab" aria-selected="false" data-task="accomp"><span>03</span><strong>Accompaniment</strong><small>Accompaniment generation</small></button>
       </div>
 
       <div class="case-head">
-        <div><p class="eyebrow" id="case-eyebrow">CASE 01 / CONTINUATION</p><h2 id="case-title">音乐续写 · Nocturne in C</h2><p class="case-description" id="case-description">给定前 8 小节，模型续写后 8 小节。竖线处是条件与生成结果的边界。</p></div>
+        <div><p class="eyebrow" id="case-eyebrow">CASE 01 / CONTINUATION</p><h2 id="case-title">Music Continuation · Nocturne in C</h2><p class="case-description" id="case-description">The first eight bars condition the model; the following eight bars are generated.</p></div>
         <div class="chips"><span id="case-bars">16 BARS</span><span id="case-bpm">♩ 96 BPM</span><span>WAV · 48 KHZ</span></div>
       </div>
 
       <div class="sample-switch" id="sample-switch" hidden>
-        <span>ACCOMPANIMENT CASE / 选择样例</span>
-        <button class="active" data-accomp-case="283" aria-pressed="true"><strong>283.mid</strong><small>77 BPM · 3 TRACKS</small></button>
-        <button data-accomp-case="057" aria-pressed="false"><strong>057.mid</strong><small>95 → 77 BPM · 3 TRACKS</small></button>
+        <span>ACCOMPANIMENT CASE</span>
+        <button class="active" data-accomp-case="283" aria-pressed="true"><strong>283.mid</strong><small>64 BARS · 77 BPM</small></button>
+        <button data-accomp-case="057" aria-pressed="false"><strong>057.mid</strong><small>64 BARS · 95 → 77 BPM</small></button>
+        <label class="isolation-toggle">
+          <input type="checkbox" id="remove-melody" />
+          <span><strong>Remove melody</strong><small>PIANO + BRIDGE ONLY</small></span>
+        </label>
       </div>
 
       <div class="studio-grid">
         <aside class="track-panel">
-          <p class="panel-label">TRACKS / 轨道</p>
-          <button class="track-button" data-track="0"><i style="background:#ff6b4a"></i><span><strong>钢琴</strong><small>Piano</small></span><b>显示</b></button>
-          <button class="track-button" data-track="1"><i style="background:#b9ff66"></i><span><strong>弦乐</strong><small>Strings</small></span><b>显示</b></button>
-          <button class="track-button" data-track="2"><i style="background:#70c8ff"></i><span><strong>贝斯</strong><small>Bass</small></span><b>显示</b></button>
+          <p class="panel-label">TRACKS</p>
+          <button class="track-button" data-track="0"><i style="background:#ff6b4a"></i><span><strong>PIANO</strong><small>Piano</small></span><b>ON</b></button>
+          <button class="track-button" data-track="1"><i style="background:#b9ff66"></i><span><strong>STRINGS</strong><small>Strings</small></span><b>ON</b></button>
+          <button class="track-button" data-track="2"><i style="background:#70c8ff"></i><span><strong>BASS</strong><small>Bass</small></span><b>ON</b></button>
           <div class="prompt-card"><span>CONDITION</span><p id="case-prompt">8-bar piano prompt</p></div>
         </aside>
 
         <div>
           <div class="visualizer" id="visualizer">
-            <div class="visualizer-top"><span>REAL-TIME PIANO ROLL</span><div class="view-switch"><button class="active" data-view="waterfall">瀑布</button><button data-view="timeline">时间轴</button></div></div>
+            <div class="visualizer-top"><span>REAL-TIME PIANO ROLL</span><div class="view-switch"><button class="active" data-view="waterfall">FALLING NOTES</button><button data-view="timeline">TIMELINE</button></div></div>
             <div class="waterfall" id="waterfall"><div class="now-line"><span>NOW</span></div></div>
-            <div class="roll" id="timeline" hidden><div class="bar-numbers"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span></div><div class="playhead" id="playhead"><b>0.0s</b></div></div>
+            <div class="roll" id="timeline" hidden><div class="bar-numbers"><span>01</span><span>16</span><span>32</span><span>48</span><span>64</span></div><div class="playhead" id="playhead"><b>0.0s</b></div></div>
             <div class="keyboard" aria-hidden="true" id="keyboard"></div>
           </div>
           <div class="transport">
             <audio id="audio" src="./public/audio/continuation.wav" preload="metadata"></audio>
-            <button class="play" id="play" aria-label="播放">▶</button>
+            <button class="play" id="play" aria-label="Play">▶</button>
             <span class="time" id="current-time">00:00.0</span>
-            <input id="progress" aria-label="播放进度" type="range" min="0" max="15.5" step="0.01" value="0" />
+            <input id="progress" aria-label="Playback progress" type="range" min="0" max="15.5" step="0.01" value="0" />
             <span class="time" id="duration">00:15.5</span>
             <a class="download" id="download" href="./public/audio/continuation.wav" download>↓ WAV</a>
             <a class="download" id="midi-download" href="#" download hidden>↓ MIDI</a>
@@ -75,22 +79,22 @@
       </div>
 
       <div class="case-index">
-        <button data-jump="continue"><span style="background:#ff6b4a">01</span><div><strong>音乐续写</strong><small>Continuation</small></div><b>→</b></button>
-        <button data-jump="chord"><span style="background:#b9ff66">02</span><div><strong>和弦生成</strong><small>Chord → Music</small></div><b>→</b></button>
-        <button data-jump="accomp"><span style="background:#70c8ff">03</span><div><strong>伴奏生成</strong><small>Accompaniment</small></div><b>→</b></button>
+        <button data-jump="continue"><span style="background:#ff6b4a">01</span><div><strong>Music Continuation</strong><small>Continuation</small></div><b>→</b></button>
+        <button data-jump="chord"><span style="background:#b9ff66">02</span><div><strong>Chord-to-Music</strong><small>Chord-conditioned</small></div><b>→</b></button>
+        <button data-jump="accomp"><span style="background:#70c8ff">03</span><div><strong>Accompaniment</strong><small>Accompaniment generation</small></div><b>→</b></button>
       </div>
     </section>
 
     <section class="method" id="method">
-      <div class="method-title"><p class="eyebrow">RECOMMENDED FOUNDATION</p><h2>高质量音频留在后端，<br><em>浏览器只负责忠实呈现。</em></h2></div>
+      <div class="method-title"><p class="eyebrow">RECOMMENDED FOUNDATION</p><h2>High-quality audio offline.<br><em>Faithful playback online.</em></h2></div>
       <div class="pipeline">
-        <article><span>01 / PARSE</span><h3>MIDI 时间轴</h3><p>用 @tonejs/midi 解析音符、速度、乐器与轨道信息，生成前端钢琴卷所需的统一 JSON。</p><a href="https://github.com/Tonejs/Midi" target="_blank" rel="noreferrer">Tonejs/Midi ↗</a></article>
-        <article><span>02 / RENDER</span><h3>采样级音色</h3><p>FluidSynth 加载 SF2/SF3，以 48 kHz 离线渲染 WAV；音质由所选 SoundFont、动态与混响共同决定。</p><a href="https://github.com/FluidSynth/fluidsynth" target="_blank" rel="noreferrer">FluidSynth ↗</a></article>
-        <article><span>03 / SYNC</span><h3>音频主时钟</h3><p>网页以真实音频 currentTime 为唯一时钟驱动瀑布钢琴卷，不让动画与最终听到的音频漂移。</p><a href="https://github.com/cifkao/html-midi-player" target="_blank" rel="noreferrer">Visualizer reference ↗</a></article>
+        <article><span>01 / PARSE</span><h3>MIDI timeline</h3><p>Parse notes, velocity, instruments, tempo, and track structure into a unified piano-roll representation.</p><a href="https://github.com/Tonejs/Midi" target="_blank" rel="noreferrer">Tonejs/Midi ↗</a></article>
+        <article><span>02 / RENDER</span><h3>Sampled timbre</h3><p>FluidSynth renders SF2/SF3 instruments offline at 48 kHz, with dynamics, chorus, and reverb preserved.</p><a href="https://github.com/FluidSynth/fluidsynth" target="_blank" rel="noreferrer">FluidSynth ↗</a></article>
+        <article><span>03 / SYNC</span><h3>Audio master clock</h3><p>The piano roll follows the audio element's current time, keeping every note aligned with the rendered result.</p><a href="https://github.com/cifkao/html-midi-player" target="_blank" rel="noreferrer">Visualizer reference ↗</a></article>
       </div>
-      <div class="quality-note"><strong>音色策略</strong><p>完整 GM 多乐器可从 FluidR3 或 GeneralUser GS 起步；论文展示建议为钢琴、弦乐等重点轨道配置更好的专用采样库，再统一做响度与峰值归一化。不要使用浏览器振荡器作为最终 case study 音频。</p><span>FLUIDSYNTH → 48 KHZ WAV → OPTIONAL MP3 → WEB AUDIO MASTER CLOCK</span></div>
+      <div class="quality-note"><strong>Timbre strategy</strong><p>GeneralUser GS provides a consistent General MIDI baseline. Each accompaniment case is rendered as both a full mix and a melody-removed PIANO + BRIDGE mix, then peak-normalized for reliable comparison.</p><span>64 BARS → FLUIDSYNTH → 48 KHZ WAV → WEB AUDIO MASTER CLOCK</span></div>
     </section>
-    <footer><span>DID MUSIC MODEL / CASE STUDIES</span><span>THREE TASKS · ONE LISTENING SYSTEM</span></footer>
+    <footer><span>DID / CASE STUDIES</span><span>2D AUTOREGRESSIVE MODELING · DECODER-IN-DECODER</span></footer>
   </main>
   <script src="./public/data/accompaniment-cases.js"></script>
   <script src="./static-app.js"></script>

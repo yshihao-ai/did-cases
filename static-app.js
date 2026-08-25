@@ -1,14 +1,14 @@
 const tasks = {
-  continue: { index:'01', label:'音乐续写', en:'CONTINUATION', color:'#ff6b4a', title:'Nocturne in C', description:'给定前 8 小节，模型续写后 8 小节。竖线处是条件与生成结果的边界。', audio:'./public/audio/continuation.wav', bpm:96, bars:16, prompt:'8-bar piano prompt', seed:1 },
-  chord: { index:'02', label:'和弦生成', en:'CHORD → MUSIC', color:'#b9ff66', title:'Neon After Rain', description:'仅输入和弦走向，模型完成旋律、织体与声部安排。和弦标签保持在时间轴顶部。', audio:'./public/audio/chord-to-music.wav', bpm:108, bars:12, prompt:'Cm⁹ · A♭maj7 · E♭ · B♭sus4', seed:2 },
-  accomp: { index:'03', label:'伴奏生成', en:'ACCOMPANIMENT', color:'#70c8ff' }
+  continue: { index:'01', label:'Music Continuation', en:'CONTINUATION', color:'#ff6b4a', title:'Nocturne in C', description:'The first eight bars condition the model; the following eight bars are generated.', audio:'./public/audio/continuation.wav', bpm:96, bars:16, prompt:'8-bar piano prompt', seed:1 },
+  chord: { index:'02', label:'Chord-to-Music', en:'CHORD-CONDITIONED', color:'#b9ff66', title:'Neon After Rain', description:'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio:'./public/audio/chord-to-music.wav', bpm:108, bars:12, prompt:'Cm⁹ · A♭maj7 · E♭ · B♭sus4', seed:2 },
+  accomp: { index:'03', label:'Accompaniment', en:'ACCOMPANIMENT', color:'#70c8ff' }
 };
 const defaultTracks = [
-  { name:'Piano', cn:'钢琴', color:'#ff6b4a' },
-  { name:'Strings', cn:'弦乐', color:'#b9ff66' },
-  { name:'Bass', cn:'贝斯', color:'#70c8ff' }
+  { name:'PIANO', detail:'Piano', color:'#ff6b4a' },
+  { name:'STRINGS', detail:'Strings', color:'#b9ff66' },
+  { name:'BASS', detail:'Bass', color:'#70c8ff' }
 ];
-const trackNames = { MELODY:'主旋律', BRIDGE:'桥接声部', PIANO:'钢琴伴奏' };
+const trackDetails = { MELODY:'Source melody', BRIDGE:'Bridge track', PIANO:'Generated accompaniment' };
 const accompanimentCases = window.ACCOMPANIMENT_CASES || {};
 const audio = document.querySelector('#audio');
 const play = document.querySelector('#play');
@@ -20,6 +20,8 @@ const sampleSwitch = document.querySelector('#sample-switch');
 const visible = [true,true,true];
 let active = 'continue';
 let selectedAccomp = '283';
+let removeMelody = false;
+let pendingSeek = 0;
 let duration = 15.5;
 let notes = [];
 let activeTracks = defaultTracks;
@@ -35,7 +37,16 @@ const format = value => {
 function getTask(id=active) {
   if (id !== 'accomp') return tasks[id];
   const caseData = accompanimentCases[selectedAccomp] || Object.values(accompanimentCases)[0];
-  return { ...tasks.accomp, ...caseData, title:caseData?.title || `POP909 / ${selectedAccomp}` };
+  const mixDescription = removeMelody ? ' Melody is removed from both audio and visualization; only PIANO and BRIDGE remain.' : ' The full mix includes MELODY, BRIDGE, and PIANO.';
+  return {
+    ...tasks.accomp,
+    ...caseData,
+    title:caseData?.title || `POP909 / ${selectedAccomp}`,
+    description:`${caseData.description}${mixDescription}`,
+    audio:removeMelody ? caseData.audioNoMelody : caseData.audioFull,
+    midi:removeMelody ? caseData.midiNoMelody : caseData.midiFull,
+    notes:removeMelody ? caseData.notes.filter(note=>note.track!==0) : caseData.notes
+  };
 }
 function makeDemoNotes(seed) {
   return Array.from({length:72},(_,i)=>({ id:i, pitch:43+((i*7+i%9+seed*3)%39), start:((i*1.37+seed)%15), length:.22+(i%5)*.16, velocity:96, track:i%3 }));
@@ -44,7 +55,7 @@ function buildNotes(task) {
   notes = (task.notes || makeDemoNotes(task.seed)).map((note,id)=>({...note,id}));
   activeTracks = task.tracks?.map((track,index)=>({
     name:track.name,
-    cn:trackNames[track.name] || `轨道 ${index+1}`,
+    detail:trackDetails[track.name] || `Track ${index+1}`,
     color:track.color
   })) || defaultTracks;
   const pitches = notes.map(note=>note.pitch);
@@ -81,11 +92,12 @@ function buildNotes(task) {
 function renderTrackPanel(){
   document.querySelectorAll('[data-track]').forEach((button,index)=>{
     const track=activeTracks[index] || defaultTracks[index];
+    button.hidden=active==='accomp'&&removeMelody&&track.name==='MELODY';
     button.querySelector('i').style.background=track.color;
-    button.querySelector('strong').textContent=track.cn;
-    button.querySelector('small').textContent=track.name;
+    button.querySelector('strong').textContent=track.name;
+    button.querySelector('small').textContent=track.detail;
     button.classList.toggle('disabled',!visible[index]);
-    button.querySelector('b').textContent=visible[index]?'显示':'隐藏';
+    button.querySelector('b').textContent=visible[index]?'ON':'OFF';
   });
 }
 function render(){
@@ -104,7 +116,8 @@ function render(){
   document.querySelector('#current-time').textContent=format(time);
   if(!audio.paused) requestAnimationFrame(render);
 }
-function updateCase(task){
+function updateCase(task,preserveTime=false){
+  pendingSeek=preserveTime ? audio.currentTime : 0;
   audio.pause();
   audio.src=task.audio;
   audio.load();
@@ -147,12 +160,13 @@ function selectAccompCase(id){
 document.querySelectorAll('[data-task]').forEach(button=>button.addEventListener('click',()=>selectTask(button.dataset.task)));
 document.querySelectorAll('[data-jump]').forEach(button=>button.addEventListener('click',()=>{selectTask(button.dataset.jump);document.querySelector('#cases').scrollIntoView({behavior:'smooth'});}));
 document.querySelectorAll('[data-accomp-case]').forEach(button=>button.addEventListener('click',()=>selectAccompCase(button.dataset.accompCase)));
+document.querySelector('#remove-melody').addEventListener('change',event=>{removeMelody=event.target.checked;if(active==='accomp')updateCase(getTask('accomp'),true);});
 document.querySelectorAll('[data-track]').forEach(button=>button.addEventListener('click',()=>{const i=Number(button.dataset.track);visible[i]=!visible[i];renderTrackPanel();render();}));
 document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{const isWaterfall=button.dataset.view==='waterfall';waterfall.hidden=!isWaterfall;timeline.hidden=isWaterfall;document.querySelectorAll('[data-view]').forEach(item=>item.classList.toggle('active',item===button));}));
 play.addEventListener('click',()=>audio.paused?audio.play():audio.pause());
-audio.addEventListener('play',()=>{play.textContent='Ⅱ';play.setAttribute('aria-label','暂停');render();});
-audio.addEventListener('pause',()=>{play.textContent='▶';play.setAttribute('aria-label','播放');});
-audio.addEventListener('loadedmetadata',()=>{duration=audio.duration||duration;progress.max=duration;document.querySelector('#duration').textContent=format(duration);buildNotes(getTask());});
+audio.addEventListener('play',()=>{play.textContent='Ⅱ';play.setAttribute('aria-label','Pause');render();});
+audio.addEventListener('pause',()=>{play.textContent='▶';play.setAttribute('aria-label','Play');});
+audio.addEventListener('loadedmetadata',()=>{duration=audio.duration||duration;progress.max=duration;if(pendingSeek){audio.currentTime=Math.min(pendingSeek,duration);pendingSeek=0;}document.querySelector('#duration').textContent=format(duration);buildNotes(getTask());});
 audio.addEventListener('timeupdate',render);
 audio.addEventListener('ended',()=>{audio.currentTime=0;render();});
 progress.addEventListener('input',()=>{audio.currentTime=Number(progress.value);render();});

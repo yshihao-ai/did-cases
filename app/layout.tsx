@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'DID Music Model — Case Studies',
-  description: '续写、和弦生成与伴奏生成的多轨音乐模型案例展示。',
+  description: 'Case studies for DID: 2D Autoregressive Modeling with a Decoder-in-Decoder Architecture for Symbolic Music Generation.',
 };
 
 export default function RootLayout({

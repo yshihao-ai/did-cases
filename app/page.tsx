@@ -17,15 +17,15 @@ type Task = {
 };
 
 const tasks: Task[] = [
-  { id: 'continue', index: '01', label: '音乐续写', en: 'Continuation', color: '#ff6b4a', title: 'Nocturne in C', description: '给定前 8 小节，模型续写后 8 小节。竖线处是条件与生成结果的边界。', audio: '/audio/continuation.wav', bpm: 96, bars: 16, prompt: '8-bar piano prompt' },
-  { id: 'chord', index: '02', label: '和弦生成', en: 'Chord → Music', color: '#b9ff66', title: 'Neon After Rain', description: '仅输入和弦走向，模型完成旋律、织体与声部安排。和弦标签保持在时间轴顶部。', audio: '/audio/chord-to-music.wav', bpm: 108, bars: 12, prompt: 'Cm⁹ · A♭maj7 · E♭ · B♭sus4' },
-  { id: 'accomp', index: '03', label: '伴奏生成', en: 'Accompaniment', color: '#70c8ff', title: 'Blue Hour', description: '锁定主旋律轨道，生成钢琴、弦乐与贝斯伴奏；不同轨道使用固定颜色区分。', audio: '/audio/accompaniment.wav', bpm: 82, bars: 12, prompt: 'Lead melody · 12 bars' },
+  { id: 'continue', index: '01', label: 'Music Continuation', en: 'Continuation', color: '#ff6b4a', title: 'Nocturne in C', description: 'The first eight bars condition the model; the following eight bars are generated.', audio: '/audio/continuation.wav', bpm: 96, bars: 16, prompt: '8-bar piano prompt' },
+  { id: 'chord', index: '02', label: 'Chord-to-Music', en: 'Chord-conditioned', color: '#b9ff66', title: 'Neon After Rain', description: 'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio: '/audio/chord-to-music.wav', bpm: 108, bars: 12, prompt: 'Cm⁹ · A♭maj7 · E♭ · B♭sus4' },
+  { id: 'accomp', index: '03', label: 'Accompaniment', en: 'Accompaniment generation', color: '#70c8ff', title: 'POP909 Cases', description: 'Accompaniment generation with synchronized MELODY, BRIDGE, and PIANO tracks.', audio: '/audio/accompaniment-283.wav', bpm: 77, bars: 64, prompt: 'POP909 · first 64 bars' },
 ];
 
 const tracks = [
-  { name: 'Piano', cn: '钢琴', color: '#ff6b4a' },
-  { name: 'Strings', cn: '弦乐', color: '#b9ff66' },
-  { name: 'Bass', cn: '贝斯', color: '#70c8ff' },
+  { name: 'Piano', label: 'PIANO', color: '#ff6b4a' },
+  { name: 'Strings', label: 'STRINGS', color: '#b9ff66' },
+  { name: 'Bass', label: 'BASS', color: '#70c8ff' },
 ];
 
 function formatTime(value: number) {
@@ -83,18 +83,18 @@ export default function Home() {
   return (
     <main>
       <header className="topbar">
-        <a className="brand" href="#top" aria-label="DID Music 首页"><span className="brand-mark">D/</span><span>DID MUSIC MODEL</span></a>
-        <nav aria-label="页面导航"><a href="#cases">Case studies</a><a href="#method">Pipeline</a></nav>
+        <a className="brand" href="#top" aria-label="DID Music home"><span className="brand-mark">D/</span><span>DID MUSIC</span></a>
+        <nav aria-label="Page navigation"><a href="#cases">Case studies</a><a href="#method">Pipeline</a></nav>
         <span className="status"><i /> MODEL SHOWCASE · 2026</span>
       </header>
 
       <section className="hero" id="top">
-        <div><p className="eyebrow">GENERATIVE MUSIC / THREE TASKS</p><h1>听见模型<br/><em>如何思考。</em></h1></div>
-        <div className="hero-copy"><p>三个任务，一套统一的听觉与视觉语言。播放高质量离线渲染音频，同时检查结构、生成边界与每一条轨道。</p><span>↓ 选择任务开始试听</span></div>
+        <div><p className="eyebrow">DID / SYMBOLIC MUSIC GENERATION</p><h1>Music,<br/><em>structurally heard.</em></h1></div>
+        <div className="hero-copy"><p>DID: 2D Autoregressive Modeling with a Decoder-in-Decoder Architecture for Symbolic Music Generation</p><span>↓ SELECT A TASK TO LISTEN</span></div>
       </section>
 
       <section className="workspace" id="cases">
-        <div className="task-tabs" role="tablist" aria-label="生成任务">
+        <div className="task-tabs" role="tablist" aria-label="Generation tasks">
           {tasks.map((task) => <button key={task.id} role="tab" aria-selected={active === task.id} className={active === task.id ? 'active' : ''} onClick={() => setActive(task.id)}><span>{task.index}</span><strong>{task.label}</strong><small>{task.en}</small></button>)}
         </div>
 
@@ -105,14 +105,14 @@ export default function Home() {
 
         <div className="studio-grid">
           <aside className="track-panel">
-            <p className="panel-label">TRACKS / 轨道</p>
-            {tracks.map((track, index) => <button key={track.name} className={visibleTracks[index] ? '' : 'disabled'} onClick={() => setVisibleTracks((value) => value.map((item, i) => i === index ? !item : item))}><i style={{ background: track.color }} /><span><strong>{track.cn}</strong><small>{track.name}</small></span><b>{visibleTracks[index] ? '显示' : '隐藏'}</b></button>)}
+            <p className="panel-label">TRACKS</p>
+            {tracks.map((track, index) => <button key={track.name} className={visibleTracks[index] ? '' : 'disabled'} onClick={() => setVisibleTracks((value) => value.map((item, i) => i === index ? !item : item))}><i style={{ background: track.color }} /><span><strong>{track.label}</strong><small>{track.name}</small></span><b>{visibleTracks[index] ? 'ON' : 'OFF'}</b></button>)}
             <div className="prompt-card"><span>CONDITION</span><p>{selected.prompt}</p></div>
           </aside>
 
           <div>
             <div className="visualizer" style={{ '--accent': selected.color } as React.CSSProperties}>
-              <div className="visualizer-top"><span>REAL-TIME PIANO ROLL</span><div className="view-switch"><button className={view === 'waterfall' ? 'active' : ''} onClick={() => setView('waterfall')}>瀑布</button><button className={view === 'timeline' ? 'active' : ''} onClick={() => setView('timeline')}>时间轴</button></div></div>
+              <div className="visualizer-top"><span>REAL-TIME PIANO ROLL</span><div className="view-switch"><button className={view === 'waterfall' ? 'active' : ''} onClick={() => setView('waterfall')}>FALLING NOTES</button><button className={view === 'timeline' ? 'active' : ''} onClick={() => setView('timeline')}>TIMELINE</button></div></div>
               {view === 'waterfall' ? (
                 <div className="waterfall">
                   <div className="now-line"><span>NOW</span></div>
@@ -133,9 +133,9 @@ export default function Home() {
 
             <div className="transport">
               <audio ref={audioRef} src={selected.audio} preload="metadata" onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)} onTimeUpdate={(event) => setTime(event.currentTarget.currentTime)} onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onEnded={() => { setPlaying(false); setTime(0); }} />
-              <button className="play" onClick={togglePlay} aria-label={playing ? '暂停' : '播放'}>{playing ? 'Ⅱ' : '▶'}</button>
+              <button className="play" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>{playing ? 'Ⅱ' : '▶'}</button>
               <span className="time">{formatTime(time)}</span>
-              <input aria-label="播放进度" type="range" min="0" max={duration || 18} step="0.01" value={time} onChange={(e) => seek(Number(e.target.value))} />
+              <input aria-label="Playback progress" type="range" min="0" max={duration || 18} step="0.01" value={time} onChange={(e) => seek(Number(e.target.value))} />
               <span className="time">{formatTime(duration)}</span>
               <a className="download" href={selected.audio} download>↓ WAV</a>
             </div>
@@ -148,13 +148,13 @@ export default function Home() {
       </section>
 
       <section className="method" id="method">
-        <div className="method-title"><p className="eyebrow">RECOMMENDED FOUNDATION</p><h2>高质量音频留在后端，<br/><em>浏览器只负责忠实呈现。</em></h2></div>
+        <div className="method-title"><p className="eyebrow">RECOMMENDED FOUNDATION</p><h2>High-quality audio offline.<br/><em>Faithful playback online.</em></h2></div>
         <div className="pipeline">
-          <article><span>01 / PARSE</span><h3>MIDI 时间轴</h3><p>用 @tonejs/midi 解析音符、速度、乐器与轨道信息，生成前端钢琴卷所需的统一 JSON。</p><a href="https://github.com/Tonejs/Midi" target="_blank" rel="noreferrer">Tonejs/Midi ↗</a></article>
-          <article><span>02 / RENDER</span><h3>采样级音色</h3><p>FluidSynth 加载 SF2/SF3，以 48 kHz 离线渲染 WAV；音质由所选 SoundFont、动态与混响共同决定。</p><a href="https://github.com/FluidSynth/fluidsynth" target="_blank" rel="noreferrer">FluidSynth ↗</a></article>
-          <article><span>03 / SYNC</span><h3>音频主时钟</h3><p>网页以真实音频 currentTime 为唯一时钟驱动瀑布钢琴卷，不让动画与最终听到的音频漂移。</p><a href="https://github.com/cifkao/html-midi-player" target="_blank" rel="noreferrer">Visualizer reference ↗</a></article>
+          <article><span>01 / PARSE</span><h3>MIDI timeline</h3><p>Parse notes, velocity, instruments, tempo, and track structure into a unified piano-roll representation.</p><a href="https://github.com/Tonejs/Midi" target="_blank" rel="noreferrer">Tonejs/Midi ↗</a></article>
+          <article><span>02 / RENDER</span><h3>Sampled timbre</h3><p>FluidSynth renders SF2/SF3 instruments offline at 48 kHz, with dynamics, chorus, and reverb preserved.</p><a href="https://github.com/FluidSynth/fluidsynth" target="_blank" rel="noreferrer">FluidSynth ↗</a></article>
+          <article><span>03 / SYNC</span><h3>Audio master clock</h3><p>The piano roll follows the audio element's current time, keeping every note aligned with the rendered result.</p><a href="https://github.com/cifkao/html-midi-player" target="_blank" rel="noreferrer">Visualizer reference ↗</a></article>
         </div>
-        <div className="quality-note"><strong>音色策略</strong><p>完整 GM 多乐器可从 FluidR3 或 GeneralUser GS 起步；论文展示建议为钢琴、弦乐等重点轨道配置更好的专用采样库，再统一做响度与峰值归一化。不要使用浏览器振荡器作为最终 case study 音频。</p><span>FLUIDSYNTH → 48 KHZ WAV → OPTIONAL MP3 → WEB AUDIO MASTER CLOCK</span></div>
+        <div className="quality-note"><strong>Timbre strategy</strong><p>GeneralUser GS provides a consistent General MIDI baseline, followed by peak normalization for reliable comparison.</p><span>64 BARS → FLUIDSYNTH → 48 KHZ WAV → WEB AUDIO MASTER CLOCK</span></div>
       </section>
 
       <footer><span>DID MUSIC MODEL / CASE STUDIES</span><span>THREE TASKS · ONE LISTENING SYSTEM</span></footer>
