@@ -13,94 +13,121 @@
   <meta name="twitter:description" content="Continuation, chord-to-music, and accompaniment generation with synchronized multi-track piano rolls." />
   <meta name="twitter:image" content="https://yshihao-ai.github.io/did-cases/public/og.png" />
   <link rel="icon" href="./public/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./app/globals.css?v=prompt-1" />
+  <link rel="stylesheet" href="./app/globals.css?v=academic-1" />
 </head>
 <body>
-  <main>
-    <header class="topbar">
-      <a class="brand" href="#top" aria-label="DID Music home"><span class="brand-mark">D/</span><span>DID MUSIC</span></a>
-      <nav aria-label="Page navigation"><a href="#cases">Case studies</a></nav>
-      <span class="status"><i></i> MODEL SHOWCASE · 2026</span>
-    </header>
+  <header class="site-header">
+    <nav class="site-nav" aria-label="Page navigation">
+      <a class="wordmark" href="#top">DID</a>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#cases">Case studies</a>
+        <a href="https://github.com/yshihao-ai/did-cases">GitHub</a>
+      </div>
+    </nav>
+  </header>
 
+  <main>
     <section class="hero" id="top">
-      <div><p class="eyebrow">DID / SYMBOLIC MUSIC GENERATION</p><h1 class="model-title">DID: <em>2D Autoregressive Modeling with a Decoder-in-Decoder Architecture</em></h1></div>
-      <div class="hero-copy"><p>Continuation, chord-conditioned generation, and accompaniment generation, presented through one synchronized listening and visualization system.</p><span>↓ SELECT A TASK TO LISTEN</span></div>
+      <p class="kicker">SYMBOLIC MUSIC GENERATION · INTERACTIVE CASE STUDY</p>
+      <h1>DID: <em>2D Autoregressive Modeling with a Decoder-in-Decoder Architecture</em></h1>
+      <p class="hero-summary">Continuation, chord-conditioned generation, and accompaniment generation presented through synchronized audio and piano-roll visualization.</p>
+      <div class="hero-links" aria-label="Quick links">
+        <a href="#cases">Explore case studies</a>
+        <a href="https://github.com/yshihao-ai/did-cases">Source code</a>
+      </div>
     </section>
 
-    <section class="workspace" id="cases">
+    <section class="paper-section overview" id="overview">
+      <h2>Overview</h2>
+      <p>This page presents representative outputs from DID across three symbolic music generation settings. Each case can be auditioned as high-quality audio and inspected as an animated, track-aware piano roll.</p>
+    </section>
+
+    <section class="paper-section cases" id="cases">
+      <div class="section-heading">
+        <h2>Case Studies</h2>
+        <p>Select a task and example, then listen while following the synchronized notation.</p>
+      </div>
+
       <div class="task-tabs" role="tablist" aria-label="Generation tasks">
-        <button role="tab" aria-selected="true" class="active" data-task="continue"><span>01</span><strong>Music Continuation</strong><small>Continuation</small></button>
+        <button role="tab" aria-selected="true" class="active" data-task="continue"><span>01</span><strong>Music Continuation</strong><small>Prompt → continuation</small></button>
         <button role="tab" aria-selected="false" data-task="chord"><span>02</span><strong>Chord-to-Music</strong><small>Chord-conditioned</small></button>
-        <button role="tab" aria-selected="false" data-task="accomp"><span>03</span><strong>Accompaniment</strong><small>Accompaniment generation</small></button>
+        <button role="tab" aria-selected="false" data-task="accomp"><span>03</span><strong>Accompaniment</strong><small>Melody-conditioned</small></button>
       </div>
 
-      <div class="case-head">
-        <div><p class="eyebrow" id="case-eyebrow">CASE 01 / CONTINUATION</p><h2 id="case-title">Music Continuation · Continuation / 634</h2><p class="case-description" id="case-description">A DID music continuation case, presented as the first 32 bars with its original tempo curve.</p></div>
-        <div class="chips"><span id="case-bars">32 BARS</span><span id="case-bpm">♩ 95 BPM</span><span>WAV · 48 KHZ</span></div>
-      </div>
-
-      <div class="sample-switch" id="continuation-switch">
-        <span>CONTINUATION CASE</span>
-        <button class="active" data-continuation-case="634" aria-pressed="true"><strong>634.mid</strong><small>32 BARS · 95 BPM</small></button>
-        <button data-continuation-case="335" aria-pressed="false"><strong>335.mid</strong><small>32 BARS · 96 BPM</small></button>
-        <button data-continuation-case="1081" aria-pressed="false"><strong>1081.mid</strong><small>32 BARS · 126 BPM</small></button>
-        <button data-continuation-case="1129" aria-pressed="false"><strong>1129.mid</strong><small>32 BARS · 147 BPM</small></button>
-      </div>
-
-      <div class="sample-switch" id="accompaniment-switch" hidden>
-        <span>ACCOMPANIMENT CASE</span>
-        <button class="active" data-accomp-case="283" aria-pressed="true"><strong>283.mid</strong><small>32 BARS · 77 BPM</small></button>
-        <button data-accomp-case="057" aria-pressed="false"><strong>057.mid</strong><small>32 BARS · 95 → 77 BPM</small></button>
-        <button data-accomp-case="290" aria-pressed="false"><strong>290.mid</strong><small>32 BARS · 95 → 70 BPM</small></button>
-        <button data-accomp-case="290_gt" aria-pressed="false"><strong>290_gt.mid</strong><small>32 BARS · 95 → 70 BPM</small></button>
-        <button data-accomp-case="283_v2" aria-pressed="false"><strong>283_v2.mid</strong><small>32 BARS · 77 BPM</small></button>
-        <button data-accomp-case="057_v2" aria-pressed="false"><strong>057_v2.mid</strong><small>32 BARS · 95 → 77 BPM</small></button>
-        <label class="isolation-toggle">
-          <input type="checkbox" id="remove-melody" />
-          <span><strong>Remove melody</strong><small>PIANO + BRIDGE ONLY</small></span>
-        </label>
-      </div>
-
-      <div class="studio-grid">
-        <aside class="track-panel">
-          <p class="panel-label">TRACKS</p>
-          <button class="track-button" data-track="0"><i style="background:#000"></i><span><strong>PIANO</strong><small>Piano</small></span><b>ON</b></button>
-          <button class="track-button" data-track="1"><i style="background:#666"></i><span><strong>STRINGS</strong><small>Strings</small></span><b>ON</b></button>
-          <button class="track-button" data-track="2"><i style="background:#aaa"></i><span><strong>BASS</strong><small>Bass</small></span><b>ON</b></button>
-          <div class="prompt-card"><span>CONDITION</span><p id="case-prompt">8-bar piano prompt</p></div>
-        </aside>
-
-        <div>
-          <div class="visualizer" id="visualizer">
-            <div class="visualizer-top"><span>REAL-TIME PIANO ROLL</span><div class="visualizer-actions"><div class="piano-legend" id="piano-legend"><span><i class="prompt-color"></i>PROMPT · BARS 1–4</span><span><i class="continuation-color"></i>CONTINUATION · BARS 5–32</span></div><div class="view-switch"><button class="active" data-view="waterfall">FALLING NOTES</button><button data-view="timeline">TIMELINE</button></div></div></div>
-            <div class="waterfall" id="waterfall"><div class="now-line"><span>NOW</span></div></div>
-            <div class="roll" id="timeline" hidden><div class="bar-numbers"><span>01</span><span>08</span><span>16</span><span>24</span><span>32</span></div><div class="playhead" id="playhead"><b>0.0s</b></div></div>
-            <div class="keyboard" aria-hidden="true" id="keyboard"></div>
+      <article class="case-study">
+        <div class="case-head">
+          <div>
+            <p class="case-label" id="case-eyebrow">CASE 01 / CONTINUATION</p>
+            <h3 id="case-title">Music Continuation · Continuation / 634</h3>
+            <p class="case-description" id="case-description">A DID music continuation case, presented as the first 32 bars with its original tempo curve.</p>
           </div>
-          <div class="transport">
-            <audio id="audio" src="./public/audio/continuation-634.wav" preload="metadata"></audio>
-            <button class="play" id="play" aria-label="Play">▶</button>
-            <span class="time" id="current-time">00:00.0</span>
-            <input id="progress" aria-label="Playback progress" type="range" min="0" max="15.5" step="0.01" value="0" />
-            <span class="time" id="duration">00:15.5</span>
-            <a class="download" id="download" href="./public/audio/continuation-634.wav" download>↓ WAV</a>
-            <a class="download" id="midi-download" href="#" download hidden>↓ MIDI</a>
+          <div class="chips" aria-label="Case metadata"><span id="case-bars">32 bars</span><span id="case-bpm">♩ 95 BPM</span><span>WAV · 48 kHz</span></div>
+        </div>
+
+        <div class="sample-switch" id="continuation-switch">
+          <span>Examples</span>
+          <button class="active" data-continuation-case="634" aria-pressed="true"><strong>634</strong><small>32 bars · 95 BPM</small></button>
+          <button data-continuation-case="335" aria-pressed="false"><strong>335</strong><small>32 bars · 96 BPM</small></button>
+          <button data-continuation-case="1081" aria-pressed="false"><strong>1081</strong><small>32 bars · 126 BPM</small></button>
+          <button data-continuation-case="1129" aria-pressed="false"><strong>1129</strong><small>32 bars · 147 BPM</small></button>
+        </div>
+
+        <div class="sample-switch" id="accompaniment-switch" hidden>
+          <span>Examples</span>
+          <button class="active" data-accomp-case="283" aria-pressed="true"><strong>283</strong><small>32 bars · 77 BPM</small></button>
+          <button data-accomp-case="057" aria-pressed="false"><strong>057</strong><small>32 bars · 95 → 77 BPM</small></button>
+          <button data-accomp-case="290" aria-pressed="false"><strong>290</strong><small>32 bars · 95 → 70 BPM</small></button>
+          <button data-accomp-case="290_gt" aria-pressed="false"><strong>290 GT</strong><small>32 bars · 95 → 70 BPM</small></button>
+          <button data-accomp-case="283_v2" aria-pressed="false"><strong>283 v2</strong><small>32 bars · 77 BPM</small></button>
+          <button data-accomp-case="057_v2" aria-pressed="false"><strong>057 v2</strong><small>32 bars · 95 → 77 BPM</small></button>
+          <label class="isolation-toggle">
+            <input type="checkbox" id="remove-melody" />
+            <span><strong>Remove melody</strong><small>Piano + bridge only</small></span>
+          </label>
+        </div>
+
+        <div class="studio-grid">
+          <aside class="track-panel">
+            <p class="panel-label">Tracks</p>
+            <button class="track-button" data-track="0"><i style="background:#ff6b4a"></i><span><strong>PIANO</strong><small>Piano</small></span><b>On</b></button>
+            <button class="track-button" data-track="1"><i style="background:#b9ff66"></i><span><strong>STRINGS</strong><small>Strings</small></span><b>On</b></button>
+            <button class="track-button" data-track="2"><i style="background:#70c8ff"></i><span><strong>BASS</strong><small>Bass</small></span><b>On</b></button>
+            <div class="prompt-card"><span>Condition</span><p id="case-prompt">Bars 1–4: prompt · bars 5–32: continuation</p></div>
+          </aside>
+
+          <div class="player-column">
+            <div class="visualizer" id="visualizer">
+              <div class="visualizer-top">
+                <span>Piano roll</span>
+                <div class="visualizer-actions">
+                  <div class="piano-legend" id="piano-legend"><span><i class="prompt-color"></i>Prompt · bars 1–4</span><span><i class="continuation-color"></i>Continuation · bars 5–32</span></div>
+                  <div class="view-switch"><button class="active" data-view="waterfall">Falling notes</button><button data-view="timeline">Timeline</button></div>
+                </div>
+              </div>
+              <div class="waterfall" id="waterfall"><div class="now-line"><span>NOW</span></div></div>
+              <div class="roll" id="timeline" hidden><div class="bar-numbers"><span>01</span><span>08</span><span>16</span><span>24</span><span>32</span></div><div class="playhead" id="playhead"><b>0.0s</b></div></div>
+              <div class="keyboard" aria-hidden="true" id="keyboard"></div>
+            </div>
+
+            <div class="transport">
+              <audio id="audio" src="./public/audio/continuation-634.wav" preload="metadata"></audio>
+              <button class="play" id="play" aria-label="Play">▶</button>
+              <span class="time" id="current-time">00:00.0</span>
+              <input id="progress" aria-label="Playback progress" type="range" min="0" max="15.5" step="0.01" value="0" />
+              <span class="time" id="duration">00:15.5</span>
+              <a class="download" id="download" href="./public/audio/continuation-634.wav" download>WAV</a>
+              <a class="download" id="midi-download" href="#" download hidden>MIDI</a>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="case-index">
-        <button data-jump="continue"><span>01</span><div><strong>Music Continuation</strong><small>Continuation</small></div><b>→</b></button>
-        <button data-jump="chord"><span>02</span><div><strong>Chord-to-Music</strong><small>Chord-conditioned</small></div><b>→</b></button>
-        <button data-jump="accomp"><span>03</span><div><strong>Accompaniment</strong><small>Accompaniment generation</small></div><b>→</b></button>
-      </div>
+      </article>
     </section>
-
-    <footer><span>DID / CASE STUDIES</span><span>2D AUTOREGRESSIVE MODELING · DECODER-IN-DECODER</span></footer>
   </main>
-  <script src="./public/data/continuation-cases.js?v=prompt-1"></script>
-  <script src="./public/data/accompaniment-cases.js?v=prompt-1"></script>
-  <script src="./static-app.js?v=prompt-1"></script>
+
+  <footer><span>DID · Symbolic Music Generation</span><span>Interactive case studies</span></footer>
+  <script src="./public/data/continuation-cases.js?v=academic-1"></script>
+  <script src="./public/data/accompaniment-cases.js?v=academic-1"></script>
+  <script src="./static-app.js?v=academic-1"></script>
 </body>
 </html>
