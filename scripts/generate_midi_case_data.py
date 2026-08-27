@@ -108,13 +108,21 @@ def main() -> None:
     parser.add_argument("--source", action="append", required=True, type=Path)
     parser.add_argument("--public-dir", required=True, type=Path)
     parser.add_argument("--bars", type=int, default=32)
+    parser.add_argument("--append", action="store_true")
     args = parser.parse_args()
     public_dir = args.public_dir.resolve()
     midi_dir = public_dir / "midi"
     data_dir = public_dir / "data"
     midi_dir.mkdir(parents=True, exist_ok=True)
     data_dir.mkdir(parents=True, exist_ok=True)
+    data_path = data_dir / "accompaniment-cases.js"
     cases = {}
+    if args.append and data_path.exists():
+        existing = data_path.read_text(encoding="utf-8").strip()
+        prefix = "window.ACCOMPANIMENT_CASES="
+        if not existing.startswith(prefix) or not existing.endswith(";"):
+            raise ValueError(f"Unexpected accompaniment data format: {data_path}")
+        cases = json.loads(existing[len(prefix):-1])
     for source in args.source:
         case_id = source.stem
         midi, limit_tick = trim_midi(source.resolve(), args.bars)
@@ -127,7 +135,7 @@ def main() -> None:
         no_melody.dump(str(midi_dir / f"{case_id}-no-melody.mid"))
         cases[case_id] = build_case(midi, limit_tick, args.bars, case_id)
     payload = json.dumps(cases, ensure_ascii=False, separators=(",", ":"))
-    (data_dir / "accompaniment-cases.js").write_text(
+    data_path.write_text(
         f"window.ACCOMPANIMENT_CASES={payload};\n", encoding="utf-8"
     )
 
