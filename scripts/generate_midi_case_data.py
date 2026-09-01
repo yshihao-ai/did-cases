@@ -57,6 +57,11 @@ def trim_midi(source: Path, bars: int) -> tuple[miditoolkit.MidiFile, int]:
 
 
 def build_case(midi: miditoolkit.MidiFile, limit_tick: int, bars: int, case_id: str) -> dict:
+    display_id = case_id
+    if "_" in case_id:
+        base_id, date_suffix = case_id.rsplit("_", 1)
+        if len(date_suffix) == 8 and date_suffix.isdigit():
+            display_id = f"{base_id} · {date_suffix[:4]}.{date_suffix[4:6]}.{date_suffix[6:]}"
     tempo_changes = sorted(midi.tempo_changes, key=lambda item: item.time)
     ticks_per_beat = int(midi.ticks_per_beat)
     notes = []
@@ -88,8 +93,8 @@ def build_case(midi: miditoolkit.MidiFile, limit_tick: int, bars: int, case_id: 
     initial_bpm = round(float(tempo_changes[0].tempo if tempo_changes else 120.0))
     return {
         "id": case_id,
-        "title": f"POP909 / {case_id}",
-        "description": f"Case {case_id}, limited to the first {bars} bars, with synchronized melody, bridge, and generated piano accompaniment.",
+        "title": f"POP909 / {display_id}",
+        "description": f"Case {display_id}, limited to the first {bars} bars, with synchronized melody, bridge, and generated piano accompaniment.",
         "audioFull": f"./public/audio/accompaniment-{case_id}.wav",
         "audioNoMelody": f"./public/audio/accompaniment-{case_id}-no-melody.wav",
         "midiFull": f"./public/midi/{case_id}.mid",
@@ -97,7 +102,7 @@ def build_case(midi: miditoolkit.MidiFile, limit_tick: int, bars: int, case_id: 
         "bpm": initial_bpm,
         "bars": bars,
         "duration": round(tick_to_seconds(limit_tick, tempo_changes, ticks_per_beat), 4),
-        "prompt": f"POP909 song {case_id} · first {bars} bars",
+        "prompt": f"POP909 song {display_id} · first {bars} bars",
         "tracks": tracks,
         "notes": notes,
     }
