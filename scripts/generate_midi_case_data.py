@@ -62,6 +62,8 @@ def build_case(midi: miditoolkit.MidiFile, limit_tick: int, bars: int, case_id: 
         base_id, date_suffix = case_id.rsplit("_", 1)
         if len(date_suffix) == 8 and date_suffix.isdigit():
             display_id = f"{base_id} · {date_suffix[:4]}.{date_suffix[4:6]}.{date_suffix[6:]}"
+        elif date_suffix.lower() == "1w":
+            display_id = f"{base_id} · 1w"
     tempo_changes = sorted(midi.tempo_changes, key=lambda item: item.time)
     ticks_per_beat = int(midi.ticks_per_beat)
     notes = []
