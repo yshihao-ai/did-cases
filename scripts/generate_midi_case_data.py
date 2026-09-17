@@ -95,7 +95,7 @@ def build_case(midi: miditoolkit.MidiFile, limit_tick: int, bars: int, case_id: 
     initial_bpm = round(float(tempo_changes[0].tempo if tempo_changes else 120.0))
     return {
         "id": case_id,
-        "title": f"POP909 / {display_id}",
+        "title": f"Accompaniment / {display_id}",
         "description": f"Case {display_id}, limited to the first {bars} bars, with synchronized melody, bridge, and generated piano accompaniment.",
         "audioFull": f"./public/audio/accompaniment-{case_id}.wav",
         "audioNoMelody": f"./public/audio/accompaniment-{case_id}-no-melody.wav",
@@ -104,7 +104,7 @@ def build_case(midi: miditoolkit.MidiFile, limit_tick: int, bars: int, case_id: 
         "bpm": initial_bpm,
         "bars": bars,
         "duration": round(tick_to_seconds(limit_tick, tempo_changes, ticks_per_beat), 4),
-        "prompt": f"POP909 song {display_id} · first {bars} bars",
+        "prompt": f"Case {display_id} · first {bars} bars",
         "tracks": tracks,
         "notes": notes,
     }

@@ -1,6 +1,6 @@
 const tasks = {
   continue: { index:'01', label:'Music Continuation', en:'CONTINUATION', color:'#000' },
-  chord: { index:'02', label:'Chord-to-Music', en:'CHORD-CONDITIONED', color:'#000', title:'Neon After Rain', description:'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio:'./public/audio/chord-to-music.wav', bpm:108, bars:12, prompt:'Cm⁹ · A♭maj7 · E♭ · B♭sus4', seed:2 },
+  chord: { index:'02', label:'Chord-to-Music', en:'CHORD-CONDITIONED', color:'#000' },
   accomp: { index:'03', label:'Accompaniment', en:'ACCOMPANIMENT', color:'#000' }
 };
 const trackPalette = ['#ff6b4a','#b9ff66','#70c8ff'];
@@ -12,6 +12,7 @@ const defaultTracks = [
 ];
 const trackDetails = { MELODY:'Source melody', BRIDGE:'Bridge track', PIANO:'Generated accompaniment' };
 const continuationCases = window.CONTINUATION_CASES || {};
+const chordCases = window.CHORD_CASES || {};
 const accompanimentCases = window.ACCOMPANIMENT_CASES || {};
 const audio = document.querySelector('#audio');
 const play = document.querySelector('#play');
@@ -21,11 +22,13 @@ const timeline = document.querySelector('#timeline');
 const playhead = document.querySelector('#playhead');
 const pianoLegend = document.querySelector('#piano-legend');
 const continuationSwitch = document.querySelector('#continuation-switch');
+const chordSwitch = document.querySelector('#chord-switch');
 const accompanimentSwitch = document.querySelector('#accompaniment-switch');
 const visible = [true,true,true];
 let active = 'continue';
-let selectedContinuation = '634';
-let selectedAccomp = '283';
+let selectedContinuation = '041';
+let selectedChord = '283';
+let selectedAccomp = '057';
 let removeMelody = false;
 let pendingSeek = 0;
 let animationFrameId = 0;
@@ -50,13 +53,20 @@ function getTask(id=active) {
       title:caseData?.title || `Continuation / ${selectedContinuation}`
     };
   }
-  if (id !== 'accomp') return tasks[id];
+  if (id === 'chord') {
+    const caseData = chordCases[selectedChord] || Object.values(chordCases)[0];
+    return {
+      ...tasks.chord,
+      ...caseData,
+      title:caseData?.title || `Chord-to-Music / ${selectedChord}`
+    };
+  }
   const caseData = accompanimentCases[selectedAccomp] || Object.values(accompanimentCases)[0];
   const mixDescription = removeMelody ? ' Melody is removed from both audio and visualization; only PIANO and BRIDGE remain.' : ' The full mix includes MELODY, BRIDGE, and PIANO.';
   return {
     ...tasks.accomp,
     ...caseData,
-    title:caseData?.title || `POP909 / ${selectedAccomp}`,
+    title:caseData?.title || `Accompaniment / ${selectedAccomp}`,
     description:`${caseData.description}${mixDescription}`,
     audio:removeMelody ? caseData.audioNoMelody : caseData.audioFull,
     midi:removeMelody ? caseData.midiNoMelody : caseData.midiFull,
@@ -172,6 +182,7 @@ function selectTask(id){
     button.setAttribute('aria-selected',String(on));
   });
   continuationSwitch.hidden=id!=='continue';
+  chordSwitch.hidden=id!=='chord';
   accompanimentSwitch.hidden=id!=='accomp';
   updateCase(getTask(id));
 }
@@ -193,9 +204,19 @@ function selectAccompCase(id){
   });
   if(active==='accomp') updateCase(getTask('accomp'));
 }
+function selectChordCase(id){
+  selectedChord=id;
+  document.querySelectorAll('[data-chord-case]').forEach(button=>{
+    const on=button.dataset.chordCase===id;
+    button.classList.toggle('active',on);
+    button.setAttribute('aria-pressed',String(on));
+  });
+  if(active==='chord') updateCase(getTask('chord'));
+}
 document.querySelectorAll('[data-task]').forEach(button=>button.addEventListener('click',()=>selectTask(button.dataset.task)));
 document.querySelectorAll('[data-jump]').forEach(button=>button.addEventListener('click',()=>{selectTask(button.dataset.jump);document.querySelector('#cases').scrollIntoView({behavior:'smooth'});}));
 document.querySelectorAll('[data-continuation-case]').forEach(button=>button.addEventListener('click',()=>selectContinuationCase(button.dataset.continuationCase)));
+document.querySelectorAll('[data-chord-case]').forEach(button=>button.addEventListener('click',()=>selectChordCase(button.dataset.chordCase)));
 document.querySelectorAll('[data-accomp-case]').forEach(button=>button.addEventListener('click',()=>selectAccompCase(button.dataset.accompCase)));
 document.querySelector('#remove-melody').addEventListener('change',event=>{removeMelody=event.target.checked;if(active==='accomp')updateCase(getTask('accomp'),true);});
 document.querySelectorAll('.track-button[data-track]').forEach(button=>button.addEventListener('click',()=>{const i=Number(button.dataset.track);visible[i]=!visible[i];renderTrackPanel();render();}));
@@ -209,5 +230,6 @@ audio.addEventListener('ended',()=>{audio.currentTime=0;render();});
 progress.addEventListener('input',()=>{audio.currentTime=Number(progress.value);render();});
 document.querySelector('#keyboard').innerHTML=Array.from({length:28},(_,i)=>`<i class="${[1,3,6].includes(i%7)?'black':''}"></i>`).join('');
 selectContinuationCase(selectedContinuation);
+selectChordCase(selectedChord);
 selectAccompCase(selectedAccomp);
 selectTask('continue');
