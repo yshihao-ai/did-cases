@@ -13,7 +13,7 @@
   <meta name="twitter:description" content="Continuation, chord-to-music, and accompaniment generation with synchronized multi-track piano rolls." />
   <meta name="twitter:image" content="https://yshihao-ai.github.io/did-cases/public/og.png" />
   <link rel="icon" href="./public/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./app/globals.css?v=demo-package-1" />
+  <link rel="stylesheet" href="./app/globals.css?v=render-120-lufs-1" />
 </head>
 <body>
   <header class="site-header">
@@ -49,30 +49,30 @@
           <div>
             <p class="case-label" id="case-eyebrow">CASE 01 / CONTINUATION</p>
             <h3 id="case-title">Music Continuation · Continuation / 041</h3>
-            <p class="case-description" id="case-description">A DID music continuation case, presented as the first 32 bars with its original tempo curve.</p>
+            <p class="case-description" id="case-description">A DID music continuation case, presented as the first 32 bars at a standardized 120 BPM.</p>
           </div>
-          <div class="chips" aria-label="Case metadata"><span id="case-bars">32 bars</span><span id="case-bpm">♩ 95 BPM</span><span>WAV · 48 kHz</span></div>
+          <div class="chips" aria-label="Case metadata"><span id="case-bars">32 bars</span><span id="case-bpm">♩ 120 BPM</span><span>MP3 · 192 kbps</span></div>
         </div>
 
         <div class="sample-switch" id="continuation-switch">
           <span>Examples</span>
-          <button class="active" data-continuation-case="041" aria-pressed="true"><strong>041</strong><small>32 bars · 95 BPM</small></button>
-          <button data-continuation-case="053" aria-pressed="false"><strong>053</strong><small>32 bars · 95 BPM</small></button>
-          <button data-continuation-case="057" aria-pressed="false"><strong>057</strong><small>32 bars · 95 BPM</small></button>
+          <button class="active" data-continuation-case="041" aria-pressed="true"><strong>041</strong><small>32 bars · 120 BPM</small></button>
+          <button data-continuation-case="053" aria-pressed="false"><strong>053</strong><small>32 bars · 120 BPM</small></button>
+          <button data-continuation-case="057" aria-pressed="false"><strong>057</strong><small>32 bars · 120 BPM</small></button>
         </div>
 
         <div class="sample-switch" id="chord-switch" hidden>
           <span>Examples</span>
-          <button class="active" data-chord-case="283" aria-pressed="true"><strong>283</strong><small>32 bars · 70 BPM</small></button>
-          <button data-chord-case="346" aria-pressed="false"><strong>346</strong><small>32 bars · 64 BPM</small></button>
+          <button class="active" data-chord-case="283" aria-pressed="true"><strong>283</strong><small>32 bars · 120 BPM</small></button>
+          <button data-chord-case="346" aria-pressed="false"><strong>346</strong><small>32 bars · 120 BPM</small></button>
         </div>
 
         <div class="sample-switch" id="accompaniment-switch" hidden>
           <span>Examples</span>
-          <button class="active" data-accomp-case="057" aria-pressed="true"><strong>057</strong><small>32 bars · 95 BPM</small></button>
-          <button data-accomp-case="283" aria-pressed="false"><strong>283</strong><small>32 bars · 77 BPM</small></button>
-          <button data-accomp-case="290" aria-pressed="false"><strong>290</strong><small>32 bars · 95 BPM</small></button>
-          <button data-accomp-case="346" aria-pressed="false"><strong>346</strong><small>32 bars · 85 BPM</small></button>
+          <button class="active" data-accomp-case="057" aria-pressed="true"><strong>057</strong><small>32 bars · 120 BPM</small></button>
+          <button data-accomp-case="283" aria-pressed="false"><strong>283</strong><small>32 bars · 120 BPM</small></button>
+          <button data-accomp-case="290" aria-pressed="false"><strong>290</strong><small>32 bars · 120 BPM</small></button>
+          <button data-accomp-case="346" aria-pressed="false"><strong>346</strong><small>32 bars · 120 BPM</small></button>
           <label class="isolation-toggle">
             <input type="checkbox" id="remove-melody" />
             <span><strong>Remove melody</strong><small>Piano + bridge only</small></span>
@@ -103,12 +103,12 @@
             </div>
 
             <div class="transport">
-              <audio id="audio" src="./public/audio/continuation-041.wav" preload="metadata"></audio>
+              <audio id="audio" src="./public/audio/continuation-041.mp3" preload="metadata"></audio>
               <button class="play" id="play" aria-label="Play">▶</button>
               <span class="time" id="current-time">00:00.0</span>
               <input id="progress" aria-label="Playback progress" type="range" min="0" max="15.5" step="0.01" value="0" />
               <span class="time" id="duration">00:15.5</span>
-              <a class="download" id="download" href="./public/audio/continuation-041.wav" download>WAV</a>
+              <a class="download" id="download" href="./public/audio/continuation-041.mp3" download>MP3</a>
               <a class="download" id="midi-download" href="#" download hidden>MIDI</a>
             </div>
           </div>
@@ -118,9 +118,9 @@
   </main>
 
   <footer><span>DID · Symbolic Music Generation</span><span>Interactive case studies</span></footer>
-  <script src="./public/data/continuation-cases.js?v=demo-package-1"></script>
-  <script src="./public/data/chord-cases.js?v=demo-package-1"></script>
-  <script src="./public/data/accompaniment-cases.js?v=demo-package-1"></script>
-  <script src="./static-app.js?v=demo-package-1"></script>
+  <script src="./public/data/continuation-cases.js?v=render-120-lufs-1"></script>
+  <script src="./public/data/chord-cases.js?v=render-120-lufs-1"></script>
+  <script src="./public/data/accompaniment-cases.js?v=render-120-lufs-1"></script>
+  <script src="./static-app.js?v=render-120-lufs-1"></script>
 </body>
 </html>

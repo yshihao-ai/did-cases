@@ -76,8 +76,8 @@ def build_case(midi, limit_tick: int, bars: int, case_id: str) -> dict:
     return {
         "id": case_id,
         "title": f"Chord-to-Music / {case_id}",
-        "description": f"Chord-conditioned generation case {case_id}, limited to the first {bars} bars and rendered with its original tempo curve.",
-        "audio": f"./public/audio/chord-{case_id}.wav",
+        "description": f"Chord-conditioned generation case {case_id}, limited to the first {bars} bars and standardized to 120 BPM for evaluation.",
+        "audio": f"./public/audio/chord-{case_id}.mp3",
         "midi": f"./public/midi/chord-{case_id}.mid",
         "bpm": initial_bpm,
         "bars": bars,

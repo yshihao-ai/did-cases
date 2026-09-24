@@ -17,9 +17,9 @@ type Task = {
 };
 
 const tasks: Task[] = [
-  { id: 'continue', index: '01', label: 'Music Continuation', en: 'Continuation', color: '#000', title: 'Continuation / 634', description: 'The first 4 bars are the prompt; bars 5–32 are generated continuation, rendered with the original tempo curve.', audio: '/audio/continuation-634.wav', bpm: 95, bars: 32, prompt: 'Bars 1–4: prompt · bars 5–32: continuation' },
-  { id: 'chord', index: '02', label: 'Chord-to-Music', en: 'Chord-conditioned', color: '#000', title: 'Neon After Rain', description: 'Given only a chord progression, the model generates melody, texture, and voice arrangement.', audio: '/audio/chord-to-music.wav', bpm: 108, bars: 12, prompt: 'Cm⁹ · A♭maj7 · E♭ · B♭sus4' },
-  { id: 'accomp', index: '03', label: 'Accompaniment', en: 'Accompaniment generation', color: '#000', title: 'POP909 Cases', description: 'Accompaniment generation with synchronized MELODY, BRIDGE, and PIANO tracks.', audio: '/audio/accompaniment-283.wav', bpm: 77, bars: 32, prompt: 'POP909 · first 32 bars' },
+  { id: 'continue', index: '01', label: 'Music Continuation', en: 'Continuation', color: '#000', title: 'Continuation / 041', description: 'The first 4 bars are the prompt; bars 5–32 are generated continuation, standardized to 120 BPM for evaluation.', audio: '/audio/continuation-041.mp3', bpm: 120, bars: 32, prompt: 'Bars 1–4: prompt · bars 5–32: continuation' },
+  { id: 'chord', index: '02', label: 'Chord-to-Music', en: 'Chord-conditioned', color: '#000', title: 'Chord-to-Music / 283', description: 'Chord-conditioned generation standardized to 120 BPM for evaluation.', audio: '/audio/chord-283.mp3', bpm: 120, bars: 32, prompt: 'Chord-conditioned generation · first 32 bars' },
+  { id: 'accomp', index: '03', label: 'Accompaniment', en: 'Accompaniment generation', color: '#000', title: 'Accompaniment / 057', description: 'Accompaniment generation with synchronized MELODY, BRIDGE, and PIANO tracks.', audio: '/audio/accompaniment-057.mp3', bpm: 120, bars: 32, prompt: 'Case 057 · first 32 bars' },
 ];
 
 const tracks = [
@@ -100,7 +100,7 @@ export default function Home() {
 
         <div className="case-head">
           <div><p className="eyebrow">CASE {selected.index} / {selected.en.toUpperCase()}</p><h2>{selected.label} · {selected.title}</h2><p className="case-description">{selected.description}</p></div>
-          <div className="chips"><span>{selected.bars} BARS</span><span>♩ {selected.bpm} BPM</span><span>WAV · 48 KHZ</span></div>
+          <div className="chips"><span>{selected.bars} BARS</span><span>♩ {selected.bpm} BPM</span><span>MP3 · 192 KBPS</span></div>
         </div>
 
         <div className="studio-grid">
@@ -138,7 +138,7 @@ export default function Home() {
               <span className="time">{formatTime(time)}</span>
               <input aria-label="Playback progress" type="range" min="0" max={duration || 18} step="0.01" value={time} onChange={(e) => seek(Number(e.target.value))} />
               <span className="time">{formatTime(duration)}</span>
-              <a className="download" href={selected.audio} download>↓ WAV</a>
+              <a className="download" href={selected.audio} download>↓ MP3</a>
             </div>
           </div>
         </div>
