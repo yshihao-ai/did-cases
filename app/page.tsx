@@ -39,7 +39,7 @@ const accompaniment: Sample[] = [
 
 function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody?: boolean }) {
   const audio = removeMelody && sample.audioNoMelody ? sample.audioNoMelody : sample.audio;
-  const audioUrl = `${audio}?v=accompaniment-velocity-80`;
+  const audioUrl = `${audio}?v=d3pia-sgm-1`;
   const midi = removeMelody && sample.midiNoMelody ? sample.midiNoMelody : sample.midi;
   return (
     <article className="audio-case">

@@ -15,7 +15,7 @@ from typing import Any
 import mido
 
 
-EXPECTED_SOUNDFONT_SHA256 = "9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe"
+EXPECTED_SOUNDFONT_SHA256 = "6643a007e594caefe8e09941f0dd04398f0b592320421fa5747dbf81ab9b791d"
 
 
 def file_sha256(path: Path) -> str:
@@ -211,6 +211,8 @@ def main() -> None:
         "ffmpeg_version": ffmpeg_version,
         "soundfont": args.soundfont.name,
         "soundfont_sha256": soundfont_hash,
+        "soundfont_reference": "Magenta sgm_plus / D3PIA-aligned SGM v2.01 Sal-Guit-Bass v1.3",
+        "reference_demo": "https://jech2.github.io/D3PIA/",
         "files": results,
     }
     if args.append_manifest and args.manifest.exists():
