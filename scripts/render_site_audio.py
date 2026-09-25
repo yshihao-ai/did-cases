@@ -70,11 +70,12 @@ def normalize_audio(source: Path, destination: Path, ffmpeg: Path, gain_db: floa
     )
 
 
-def encode_mp3(source: Path, destination: Path, ffmpeg: Path) -> None:
+def encode_flac(source: Path, destination: Path, ffmpeg: Path) -> None:
     subprocess.run(
         [
-            str(ffmpeg), "-y", "-i", str(source), "-codec:a", "libmp3lame",
-            "-b:a", "192k", "-ar", "44100", "-ac", "2", str(destination),
+            str(ffmpeg), "-y", "-i", str(source), "-codec:a", "flac",
+            "-compression_level", "8", "-ar", "44100", "-ac", "2",
+            "-sample_fmt", "s16", str(destination),
         ],
         check=True,
         capture_output=True,
@@ -84,8 +85,8 @@ def encode_mp3(source: Path, destination: Path, ffmpeg: Path) -> None:
 
 def output_name(midi: Path) -> str:
     if midi.stem.startswith(("continuation-", "chord-")):
-        return f"{midi.stem}.mp3"
-    return f"accompaniment-{midi.stem}.mp3"
+        return f"{midi.stem}.flac"
+    return f"accompaniment-{midi.stem}.flac"
 
 
 def process_one(
@@ -104,7 +105,7 @@ def process_one(
     gain_db = -16.0 - input_lufs
     normalize_audio(raw, normalized, ffmpeg, gain_db)
     normalized_lufs = integrated_loudness(normalized, ffmpeg)
-    encode_mp3(normalized, destination, ffmpeg)
+    encode_flac(normalized, destination, ffmpeg)
     final_lufs = integrated_loudness(destination, ffmpeg)
     return {
         "midi": midi.name,
@@ -176,7 +177,7 @@ def main() -> None:
         "bit_depth": 16,
         "time_signature": "4/4",
         "normalization": "whole-file EBU R128 integrated loudness fixed gain; -1.5 dBFS peak limiter",
-        "encoding": "libmp3lame 192 kbps",
+        "encoding": "FLAC lossless, compression level 8",
         "velocity_override": None,
         "fluidsynth_version": fluidsynth_version,
         "ffmpeg_version": ffmpeg_version,

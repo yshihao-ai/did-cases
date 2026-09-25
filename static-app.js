@@ -2,7 +2,7 @@ const continuationCases = window.CONTINUATION_CASES || {};
 const chordCases = window.CHORD_CASES || {};
 const accompanimentCases = window.ACCOMPANIMENT_CASES || {};
 const players = [];
-const AUDIO_REVISION = 'generaluser-1';
+const AUDIO_REVISION = 'flac-1';
 
 const versionedAudio = source => `${source}${source.includes('?') ? '&' : '?'}v=${AUDIO_REVISION}`;
 
@@ -34,7 +34,7 @@ function createPlayer(key, data, type) {
       <span class="time current-time">00:00.0</span>
       <input class="progress" aria-label="Playback progress for ${data.title || key}" type="range" min="0" max="${data.duration || 64}" step="0.01" value="0" />
       <span class="time duration">${format(data.duration || 64)}</span>
-      <a class="download mp3-download" href="${audioUrl}" download>MP3</a>
+      <a class="download audio-download" href="${audioUrl}" download>FLAC</a>
       <a class="download midi-download" href="${midiSrc}" download>MIDI</a>
     </div>`;
 
@@ -95,7 +95,7 @@ document.querySelector('#remove-melody').addEventListener('change', event => {
     const midiSrc = removeMelody ? player.data.midiNoMelody : player.data.midiFull;
     const audioUrl = versionedAudio(audioSrc);
     player.audio.src = audioUrl;
-    player.article.querySelector('.mp3-download').href = audioUrl;
+    player.article.querySelector('.audio-download').href = audioUrl;
     player.article.querySelector('.midi-download').href = midiSrc;
     player.article.querySelector('.mix-state').textContent = removeMelody ? 'Piano + bridge' : 'Full mix';
     player.audio.load();
