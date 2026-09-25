@@ -1,26 +1,7 @@
-const tasks = {
-  continue: { index:'01', label:'Music Continuation', en:'CONTINUATION' },
-  chord: { index:'02', label:'Chord-to-Music', en:'CHORD-CONDITIONED' },
-  accomp: { index:'03', label:'Accompaniment', en:'ACCOMPANIMENT' }
-};
-
 const continuationCases = window.CONTINUATION_CASES || {};
 const chordCases = window.CHORD_CASES || {};
 const accompanimentCases = window.ACCOMPANIMENT_CASES || {};
-const audio = document.querySelector('#audio');
-const play = document.querySelector('#play');
-const progress = document.querySelector('#progress');
-const continuationSwitch = document.querySelector('#continuation-switch');
-const chordSwitch = document.querySelector('#chord-switch');
-const accompanimentSwitch = document.querySelector('#accompaniment-switch');
-
-let active = 'continue';
-let selectedContinuation = '041';
-let selectedChord = '283';
-let selectedAccomp = '057';
-let removeMelody = false;
-let pendingSeek = 0;
-let duration = 64;
+const players = [];
 
 const format = value => {
   const safe = Number.isFinite(value) ? value : 0;
@@ -29,138 +10,95 @@ const format = value => {
   return `${String(minutes).padStart(2,'0')}:${seconds.toFixed(1).padStart(4,'0')}`;
 };
 
-function getTask(id=active) {
-  if (id === 'continue') {
-    const caseData = continuationCases[selectedContinuation] || Object.values(continuationCases)[0];
-    return { ...tasks.continue, ...caseData, title:caseData?.title || `Continuation / ${selectedContinuation}` };
-  }
-  if (id === 'chord') {
-    const caseData = chordCases[selectedChord] || Object.values(chordCases)[0];
-    return { ...tasks.chord, ...caseData, title:caseData?.title || `Chord-to-Music / ${selectedChord}` };
-  }
-  const caseData = accompanimentCases[selectedAccomp] || Object.values(accompanimentCases)[0];
-  const mixDescription = removeMelody
-    ? ' Melody is removed; only PIANO and BRIDGE remain.'
-    : ' The full mix includes MELODY, BRIDGE, and PIANO.';
-  return {
-    ...tasks.accomp,
-    ...caseData,
-    title:caseData?.title || `Accompaniment / ${selectedAccomp}`,
-    description:`${caseData.description}${mixDescription}`,
-    audio:removeMelody ? caseData.audioNoMelody : caseData.audioFull,
-    midi:removeMelody ? caseData.midiNoMelody : caseData.midiFull
+function createPlayer(key, data, type) {
+  const isAccompaniment = type === 'accompaniment';
+  const audioSrc = isAccompaniment ? data.audioFull : data.audio;
+  const midiSrc = isAccompaniment ? data.midiFull : data.midi;
+  const article = document.createElement('article');
+  article.className = 'audio-case';
+  article.innerHTML = `
+    <div class="audio-case-head">
+      <h3>${data.title || key}</h3>
+      <div class="row-meta">
+        ${isAccompaniment ? '<span class="mix-state">Full mix</span>' : ''}
+        <span>${data.bars || 32} bars</span><span>♩ ${data.bpm || 120} BPM</span>
+      </div>
+    </div>
+    <div class="transport audio-only-player">
+      <audio preload="metadata" src="${audioSrc}"></audio>
+      <button class="play" type="button" aria-label="Play ${data.title || key}">▶</button>
+      <span class="time current-time">00:00.0</span>
+      <input class="progress" aria-label="Playback progress for ${data.title || key}" type="range" min="0" max="${data.duration || 64}" step="0.01" value="0" />
+      <span class="time duration">${format(data.duration || 64)}</span>
+      <a class="download mp3-download" href="${audioSrc}" download>MP3</a>
+      <a class="download midi-download" href="${midiSrc}" download>MIDI</a>
+    </div>`;
+
+  const audio = article.querySelector('audio');
+  const play = article.querySelector('.play');
+  const progress = article.querySelector('.progress');
+  const currentTime = article.querySelector('.current-time');
+  const durationLabel = article.querySelector('.duration');
+  const player = { article, audio, play, progress, currentTime, durationLabel, data, type };
+  players.push(player);
+
+  const updateTime = () => {
+    const time = audio.currentTime || 0;
+    progress.value = time;
+    currentTime.textContent = format(time);
   };
-}
 
-function updateTime() {
-  const time = audio.currentTime || 0;
-  progress.value = time;
-  document.querySelector('#current-time').textContent = format(time);
-}
-
-function updateCase(task, preserveTime=false) {
-  pendingSeek = preserveTime ? audio.currentTime : 0;
-  audio.pause();
-  audio.src = task.audio;
-  audio.load();
-  duration = task.duration || 64;
-  progress.max = duration;
-  play.textContent = '▶';
-  document.querySelector('#case-eyebrow').textContent = `CASE ${task.index} / ${task.en}`;
-  document.querySelector('#case-title').textContent = `${task.label} · ${task.title}`;
-  document.querySelector('#case-description').textContent = task.description;
-  document.querySelector('#case-bars').textContent = `${task.bars} BARS`;
-  document.querySelector('#case-bpm').textContent = `♩ ${task.bpm} BPM`;
-  document.querySelector('#download').href = task.audio;
-  const midiDownload = document.querySelector('#midi-download');
-  midiDownload.hidden = !task.midi;
-  if (task.midi) midiDownload.href = task.midi;
-  document.querySelector('#duration').textContent = format(duration);
-  updateTime();
-}
-
-function selectTask(id) {
-  active = id;
-  document.querySelectorAll('[data-task]').forEach(button => {
-    const on = button.dataset.task === id;
-    button.classList.toggle('active', on);
-    button.setAttribute('aria-selected', String(on));
+  play.addEventListener('click', async () => {
+    if (audio.paused) {
+      players.forEach(item => { if (item.audio !== audio) item.audio.pause(); });
+      try { await audio.play(); } catch (error) { console.error('Playback failed', error); }
+    } else {
+      audio.pause();
+    }
   });
-  continuationSwitch.hidden = id !== 'continue';
-  chordSwitch.hidden = id !== 'chord';
-  accompanimentSwitch.hidden = id !== 'accomp';
-  updateCase(getTask(id));
-}
-
-function selectCase(selector, datasetKey, id) {
-  document.querySelectorAll(selector).forEach(button => {
-    const on = button.dataset[datasetKey] === id;
-    button.classList.toggle('active', on);
-    button.setAttribute('aria-pressed', String(on));
+  audio.addEventListener('play', () => { play.textContent = 'Ⅱ'; play.setAttribute('aria-label', `Pause ${data.title || key}`); });
+  audio.addEventListener('pause', () => { play.textContent = '▶'; play.setAttribute('aria-label', `Play ${data.title || key}`); });
+  audio.addEventListener('loadedmetadata', () => {
+    const duration = audio.duration || data.duration || 64;
+    progress.max = duration;
+    durationLabel.textContent = format(duration);
+    updateTime();
   });
+  audio.addEventListener('timeupdate', updateTime);
+  audio.addEventListener('ended', () => { audio.currentTime = 0; updateTime(); });
+  progress.addEventListener('input', () => { audio.currentTime = Number(progress.value); updateTime(); });
+  return article;
 }
 
-function selectContinuationCase(id) {
-  selectedContinuation = id;
-  selectCase('[data-continuation-case]', 'continuationCase', id);
-  if (active === 'continue') updateCase(getTask('continue'));
+function renderCases(targetId, cases, type) {
+  const target = document.querySelector(targetId);
+  Object.entries(cases)
+    .sort(([first], [second]) => Number(first) - Number(second))
+    .forEach(([key, data]) => target.appendChild(createPlayer(key, data, type)));
 }
 
-function selectChordCase(id) {
-  selectedChord = id;
-  selectCase('[data-chord-case]', 'chordCase', id);
-  if (active === 'chord') updateCase(getTask('chord'));
-}
+renderCases('#continuation-list', continuationCases, 'continuation');
+renderCases('#chord-list', chordCases, 'chord');
+renderCases('#accompaniment-list', accompanimentCases, 'accompaniment');
 
-function selectAccompCase(id) {
-  selectedAccomp = id;
-  selectCase('[data-accomp-case]', 'accompCase', id);
-  if (active === 'accomp') updateCase(getTask('accomp'));
-}
-
-document.querySelectorAll('[data-task]').forEach(button => button.addEventListener('click', () => selectTask(button.dataset.task)));
-document.querySelectorAll('[data-jump]').forEach(button => button.addEventListener('click', () => {
-  selectTask(button.dataset.jump);
-  document.querySelector('#cases').scrollIntoView({ behavior:'smooth' });
-}));
-document.querySelectorAll('[data-continuation-case]').forEach(button => button.addEventListener('click', () => selectContinuationCase(button.dataset.continuationCase)));
-document.querySelectorAll('[data-chord-case]').forEach(button => button.addEventListener('click', () => selectChordCase(button.dataset.chordCase)));
-document.querySelectorAll('[data-accomp-case]').forEach(button => button.addEventListener('click', () => selectAccompCase(button.dataset.accompCase)));
 document.querySelector('#remove-melody').addEventListener('change', event => {
-  removeMelody = event.target.checked;
-  if (active === 'accomp') updateCase(getTask('accomp'), true);
+  const removeMelody = event.target.checked;
+  players.filter(player => player.type === 'accompaniment').forEach(player => {
+    const currentTime = player.audio.currentTime || 0;
+    const wasPlaying = !player.audio.paused;
+    player.audio.pause();
+    const audioSrc = removeMelody ? player.data.audioNoMelody : player.data.audioFull;
+    const midiSrc = removeMelody ? player.data.midiNoMelody : player.data.midiFull;
+    player.audio.src = audioSrc;
+    player.article.querySelector('.mp3-download').href = audioSrc;
+    player.article.querySelector('.midi-download').href = midiSrc;
+    player.article.querySelector('.mix-state').textContent = removeMelody ? 'Piano + bridge' : 'Full mix';
+    player.audio.load();
+    player.audio.addEventListener('loadedmetadata', async () => {
+      player.audio.currentTime = Math.min(currentTime, player.audio.duration || currentTime);
+      if (wasPlaying) {
+        try { await player.audio.play(); } catch (error) { console.error('Playback failed', error); }
+      }
+    }, { once:true });
+  });
 });
-
-play.addEventListener('click', () => audio.paused ? audio.play() : audio.pause());
-audio.addEventListener('play', () => {
-  play.textContent = 'Ⅱ';
-  play.setAttribute('aria-label', 'Pause');
-});
-audio.addEventListener('pause', () => {
-  play.textContent = '▶';
-  play.setAttribute('aria-label', 'Play');
-});
-audio.addEventListener('loadedmetadata', () => {
-  duration = audio.duration || duration;
-  progress.max = duration;
-  if (pendingSeek) {
-    audio.currentTime = Math.min(pendingSeek, duration);
-    pendingSeek = 0;
-  }
-  document.querySelector('#duration').textContent = format(duration);
-  updateTime();
-});
-audio.addEventListener('timeupdate', updateTime);
-audio.addEventListener('ended', () => {
-  audio.currentTime = 0;
-  updateTime();
-});
-progress.addEventListener('input', () => {
-  audio.currentTime = Number(progress.value);
-  updateTime();
-});
-
-selectContinuationCase(selectedContinuation);
-selectChordCase(selectedChord);
-selectAccompCase(selectedAccomp);
-selectTask('continue');

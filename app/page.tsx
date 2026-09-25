@@ -1,107 +1,84 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState, type ReactNode } from 'react';
 
-type Task = {
+type Sample = {
   id: string;
-  index: string;
-  label: string;
-  en: string;
-  color: string;
   title: string;
-  description: string;
   audio: string;
-  bpm: number;
-  bars: number;
-  prompt: string;
+  midi: string;
+  audioNoMelody?: string;
+  midiNoMelody?: string;
 };
 
-const tasks: Task[] = [
-  { id: 'continue', index: '01', label: 'Music Continuation', en: 'Continuation', color: '#000', title: 'Continuation / 041', description: 'The first 4 bars are the prompt; bars 5–32 are generated continuation, standardized to 120 BPM for evaluation.', audio: '/audio/continuation-041.mp3', bpm: 120, bars: 32, prompt: 'Bars 1–4: prompt · bars 5–32: continuation' },
-  { id: 'chord', index: '02', label: 'Chord-to-Music', en: 'Chord-conditioned', color: '#000', title: 'Chord-to-Music / 283', description: 'Chord-conditioned generation standardized to 120 BPM for evaluation.', audio: '/audio/chord-283.mp3', bpm: 120, bars: 32, prompt: 'Chord-conditioned generation · first 32 bars' },
-  { id: 'accomp', index: '03', label: 'Accompaniment', en: 'Accompaniment generation', color: '#000', title: 'Accompaniment / 057', description: 'Accompaniment generation with synchronized MELODY, BRIDGE, and PIANO tracks.', audio: '/audio/accompaniment-057.mp3', bpm: 120, bars: 32, prompt: 'Case 057 · first 32 bars' },
+const continuation: Sample[] = [
+  { id:'041', title:'Continuation / 041', audio:'/audio/continuation-041.mp3', midi:'/midi/continuation-041.mid' },
+  { id:'053', title:'Continuation / 053', audio:'/audio/continuation-053.mp3', midi:'/midi/continuation-053.mid' },
+  { id:'057', title:'Continuation / 057', audio:'/audio/continuation-057.mp3', midi:'/midi/continuation-057.mid' },
 ];
 
-function formatTime(value: number) {
-  const safe = Number.isFinite(value) ? value : 0;
-  const minutes = Math.floor(safe / 60);
-  const seconds = safe % 60;
-  return `${String(minutes).padStart(2, '0')}:${seconds.toFixed(1).padStart(4, '0')}`;
+const chord: Sample[] = [
+  { id:'283', title:'Chord-to-Music / 283', audio:'/audio/chord-283.mp3', midi:'/midi/chord-283.mid' },
+  { id:'346', title:'Chord-to-Music / 346', audio:'/audio/chord-346.mp3', midi:'/midi/chord-346.mid' },
+];
+
+const accompaniment: Sample[] = [
+  { id:'057', title:'Accompaniment / 057', audio:'/audio/accompaniment-057.mp3', midi:'/midi/057.mid', audioNoMelody:'/audio/accompaniment-057-no-melody.mp3', midiNoMelody:'/midi/057-no-melody.mid' },
+  { id:'283', title:'Accompaniment / 283', audio:'/audio/accompaniment-283.mp3', midi:'/midi/283.mid', audioNoMelody:'/audio/accompaniment-283-no-melody.mp3', midiNoMelody:'/midi/283-no-melody.mid' },
+  { id:'290', title:'Accompaniment / 290', audio:'/audio/accompaniment-290.mp3', midi:'/midi/290.mid', audioNoMelody:'/audio/accompaniment-290-no-melody.mp3', midiNoMelody:'/midi/290-no-melody.mid' },
+  { id:'346', title:'Accompaniment / 346', audio:'/audio/accompaniment-346.mp3', midi:'/midi/346.mid', audioNoMelody:'/audio/accompaniment-346-no-melody.mp3', midiNoMelody:'/midi/346-no-melody.mid' },
+];
+
+function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody?: boolean }) {
+  const audio = removeMelody && sample.audioNoMelody ? sample.audioNoMelody : sample.audio;
+  const midi = removeMelody && sample.midiNoMelody ? sample.midiNoMelody : sample.midi;
+  return (
+    <article className="audio-case">
+      <div className="audio-case-head">
+        <h3>{sample.title}</h3>
+        <div className="row-meta">
+          {sample.audioNoMelody && <span className="mix-state">{removeMelody ? 'Piano + bridge' : 'Full mix'}</span>}
+          <span>32 bars</span><span>♩ 120 BPM</span>
+        </div>
+      </div>
+      <audio key={audio} className="native-audio" controls preload="metadata" src={audio} />
+      <div className="row-meta"><a className="download" href={audio} download>MP3</a><a className="download" href={midi} download>MIDI</a></div>
+    </article>
+  );
+}
+
+function TaskGroup({ index, eyebrow, title, description, samples, removeMelody=false, children }: { index:string; eyebrow:string; title:string; description:string; samples:Sample[]; removeMelody?:boolean; children?:ReactNode }) {
+  return (
+    <section className="task-group">
+      <div className="task-heading">
+        <div><p className="case-label">{index} / {eyebrow}</p><h2>{title}</h2><p>{description}</p></div>
+        <div className="task-actions">{children}<div className="chips"><span>32 BARS</span><span>♩ 120 BPM</span><span>MP3 · 192 KBPS</span></div></div>
+      </div>
+      <div className="case-list">{samples.map(sample => <AudioRow key={sample.id} sample={sample} removeMelody={removeMelody} />)}</div>
+    </section>
+  );
 }
 
 export default function Home() {
-  const [active, setActive] = useState('continue');
-  const [playing, setPlaying] = useState(false);
-  const [time, setTime] = useState(0);
-  const [duration, setDuration] = useState(18);
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const selected = tasks.find((task) => task.id === active)!;
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.pause();
-    audio.currentTime = 0;
-    setPlaying(false);
-    setTime(0);
-    audio.load();
-  }, [active]);
-
-  const togglePlay = async () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (audio.paused) {
-      await audio.play();
-    } else {
-      audio.pause();
-    }
-  };
-
-  const seek = (value: number) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.currentTime = value;
-    setTime(value);
-  };
-
+  const [removeMelody, setRemoveMelody] = useState(false);
   return (
-    <main>
-      <header className="topbar">
-        <a className="brand" href="#top" aria-label="DID Music home"><span className="brand-mark">D/</span><span>DID MUSIC</span></a>
-        <nav aria-label="Page navigation"><a href="#cases">Case studies</a></nav>
-        <span className="status"><i /> MODEL SHOWCASE · 2026</span>
-      </header>
-
-      <section className="hero" id="top">
-        <div><p className="eyebrow">DID / SYMBOLIC MUSIC GENERATION</p><h1 className="model-title">DID: <em>2D Autoregressive Modeling with a Decoder-in-Decoder Architecture</em></h1></div>
-        <div className="hero-copy"><p>Continuation, chord-conditioned generation, and accompaniment generation presented as compact audio case studies.</p><span>↓ SELECT A TASK TO LISTEN</span></div>
-      </section>
-
-      <section className="workspace" id="cases">
-        <div className="task-tabs" role="tablist" aria-label="Generation tasks">
-          {tasks.map((task) => <button key={task.id} role="tab" aria-selected={active === task.id} className={active === task.id ? 'active' : ''} onClick={() => setActive(task.id)}><span>{task.index}</span><strong>{task.label}</strong><small>{task.en}</small></button>)}
-        </div>
-
-        <div className="case-head">
-          <div><p className="eyebrow">CASE {selected.index} / {selected.en.toUpperCase()}</p><h2>{selected.label} · {selected.title}</h2><p className="case-description">{selected.description}</p></div>
-          <div className="chips"><span>{selected.bars} BARS</span><span>♩ {selected.bpm} BPM</span><span>MP3 · 192 KBPS</span></div>
-        </div>
-
-        <div className="transport audio-only-player">
-          <audio ref={audioRef} src={selected.audio} preload="metadata" onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)} onTimeUpdate={(event) => setTime(event.currentTarget.currentTime)} onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onEnded={() => { setPlaying(false); setTime(0); }} />
-          <button className="play" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>{playing ? 'Ⅱ' : '▶'}</button>
-          <span className="time">{formatTime(time)}</span>
-          <input aria-label="Playback progress" type="range" min="0" max={duration || 64} step="0.01" value={time} onChange={(e) => seek(Number(e.target.value))} />
-          <span className="time">{formatTime(duration)}</span>
-          <a className="download" href={selected.audio} download>↓ MP3</a>
-        </div>
-
-        <div className="case-index">
-          {tasks.map((task) => <button key={task.id} onClick={() => { setActive(task.id); document.querySelector('#cases')?.scrollIntoView({ behavior: 'smooth' }); }}><span style={{ background: task.color }}>{task.index}</span><div><strong>{task.label}</strong><small>{task.en}</small></div><b>→</b></button>)}
-        </div>
-      </section>
-
-      <footer><span>DID MUSIC MODEL / CASE STUDIES</span><span>THREE TASKS · ONE LISTENING SYSTEM</span></footer>
-    </main>
+    <>
+      <header className="site-header"><nav className="site-nav" aria-label="Page navigation"><a className="wordmark" href="#top">DID</a><div className="nav-links"><a href="#cases">Case studies</a></div></nav></header>
+      <main>
+        <section className="hero" id="top">
+          <p className="kicker">SYMBOLIC MUSIC GENERATION · INTERACTIVE CASE STUDY</p>
+          <h1>DID: <em>2D Autoregressive Modeling with a Decoder-in-Decoder Architecture</em></h1>
+          <p className="hero-summary">Continuation, chord-conditioned generation, and accompaniment generation presented as compact audio case studies.</p>
+        </section>
+        <section className="paper-section cases" id="cases">
+          <TaskGroup index="01" eyebrow="CONTINUATION" title="Music Continuation" description="The first 4 bars are the prompt; bars 5–32 are generated by DID." samples={continuation} />
+          <TaskGroup index="02" eyebrow="CHORD-CONDITIONED" title="Chord-to-Music" description="Music generated from a given chord progression." samples={chord} />
+          <TaskGroup index="03" eyebrow="ACCOMPANIMENT" title="Accompaniment Generation" description="Melody-conditioned piano and bridge accompaniment." samples={accompaniment} removeMelody={removeMelody}>
+            <label className="isolation-toggle"><input type="checkbox" checked={removeMelody} onChange={event => setRemoveMelody(event.target.checked)} /><span><strong>Remove melody</strong><small>Piano + bridge only</small></span></label>
+          </TaskGroup>
+        </section>
+      </main>
+      <footer><span>DID · Symbolic Music Generation</span><span>Interactive case studies</span></footer>
+    </>
   );
 }
