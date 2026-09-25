@@ -72,11 +72,11 @@ def build_case(midi, limit_tick: int, bars: int, case_id: str) -> dict:
                 }
             )
     notes.sort(key=lambda item: (item["start"], item["pitch"], item["track"]))
-    initial_bpm = round(float(tempo_changes[0].tempo if tempo_changes else 120.0))
+    initial_bpm = round(float(tempo_changes[0].tempo if tempo_changes else 90.0))
     return {
         "id": case_id,
         "title": f"Chord-to-Music / {case_id}",
-        "description": f"Chord-conditioned generation case {case_id}, limited to the first {bars} bars and standardized to 120 BPM for evaluation.",
+        "description": f"Chord-conditioned generation case {case_id}, limited to the first {bars} bars and standardized to {initial_bpm} BPM for evaluation.",
         "audio": f"./public/audio/chord-{case_id}.flac",
         "midi": f"./public/midi/chord-{case_id}.mid",
         "bpm": initial_bpm,
@@ -93,6 +93,7 @@ def main() -> None:
     parser.add_argument("--source", action="append", required=True, type=Path)
     parser.add_argument("--public-dir", required=True, type=Path)
     parser.add_argument("--bars", type=int, default=32)
+    parser.add_argument("--bpm", type=float, default=90.0)
     args = parser.parse_args()
     public_dir = args.public_dir.resolve()
     midi_dir = public_dir / "midi"
@@ -101,8 +102,10 @@ def main() -> None:
     data_dir.mkdir(parents=True, exist_ok=True)
     cases = {}
     for source in args.source:
-        case_id = source.stem
-        midi, limit_tick = trim_midi(source.resolve(), args.bars)
+        case_id = source.stem.removeprefix("chord-")
+        midi, limit_tick = trim_midi(
+            source.resolve(), args.bars, target_bpm=args.bpm
+        )
         midi.dump(str(midi_dir / f"chord-{case_id}.mid"))
         cases[case_id] = build_case(midi, limit_tick, args.bars, case_id)
     payload = json.dumps(cases, ensure_ascii=False, separators=(",", ":"))

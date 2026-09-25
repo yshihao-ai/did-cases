@@ -108,6 +108,23 @@ def validate_accompaniment_velocity(midi_files: list[Path], expected: int) -> No
             )
 
 
+def validate_tempo(midi_files: list[Path], expected_bpm: float) -> None:
+    expected_tempo = mido.bpm2tempo(expected_bpm)
+    for midi_path in midi_files:
+        tempos = {
+            message.tempo
+            for track in mido.MidiFile(midi_path).tracks
+            for message in track
+            if message.type == "set_tempo"
+        }
+        if tempos != {expected_tempo}:
+            actual_bpms = sorted(round(mido.tempo2bpm(tempo), 6) for tempo in tempos)
+            raise RuntimeError(
+                f"Expected {midi_path.name} to use only {expected_bpm:g} BPM, "
+                f"got {actual_bpms}"
+            )
+
+
 def process_one(
     midi: Path,
     output_dir: Path,
@@ -146,6 +163,7 @@ def main() -> None:
     parser.add_argument("--ffmpeg", required=True, type=Path)
     parser.add_argument("--soundfont", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path)
+    parser.add_argument("--target-bpm", type=float, default=90.0)
     parser.add_argument("--accompaniment-velocity", type=int)
     parser.add_argument("--append-manifest", action="store_true")
     parser.add_argument("--workers", type=int, default=4)
@@ -168,6 +186,7 @@ def main() -> None:
     midi_files = sorted(args.midi_dir.glob("*.mid"), key=lambda item: item.name.casefold())
     if not midi_files:
         raise RuntimeError("No MIDI files found")
+    validate_tempo(midi_files, args.target_bpm)
     if args.accompaniment_velocity is not None:
         if not 1 <= args.accompaniment_velocity <= 127:
             raise ValueError("Accompaniment velocity must be between 1 and 127")
@@ -194,7 +213,7 @@ def main() -> None:
         )
 
     manifest = {
-        "target_bpm": 120.0,
+        "target_bpm": args.target_bpm,
         "target_lufs": -16.0,
         "sample_rate": 44100,
         "channels": 2,

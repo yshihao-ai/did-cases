@@ -2,7 +2,7 @@ const continuationCases = window.CONTINUATION_CASES || {};
 const chordCases = window.CHORD_CASES || {};
 const accompanimentCases = window.ACCOMPANIMENT_CASES || {};
 const players = [];
-const AUDIO_REVISION = 'd3pia-sgm-1';
+const AUDIO_REVISION = 'd3pia-sgm-90bpm-1';
 
 const versionedAudio = source => `${source}${source.includes('?') ? '&' : '?'}v=${AUDIO_REVISION}`;
 

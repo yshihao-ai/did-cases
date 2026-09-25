@@ -1,4 +1,4 @@
-"""Prepare website MIDI files at a fixed 120 BPM and 4/4 length."""
+"""Prepare website MIDI files at a fixed 90 BPM and 4/4 length."""
 
 from __future__ import annotations
 
@@ -81,7 +81,7 @@ def main() -> None:
     parser.add_argument("--source", action="append", nargs=2, metavar=("TASK", "MIDI"), required=True)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--bars", type=int, default=32)
-    parser.add_argument("--bpm", type=float, default=120.0)
+    parser.add_argument("--bpm", type=float, default=90.0)
     args = parser.parse_args()
 
     report = []

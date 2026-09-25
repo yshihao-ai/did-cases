@@ -16,7 +16,7 @@ TRACK_COLORS = ("#ff6b4a", "#b9ff66", "#70c8ff")
 def tick_to_seconds(tick: int, tempo_changes, ticks_per_beat: int) -> float:
     elapsed = 0.0
     cursor = 0
-    tempo = 120.0
+    tempo = 90.0
     for change in tempo_changes:
         change_tick = int(change.time)
         if change_tick > tick:
@@ -27,7 +27,12 @@ def tick_to_seconds(tick: int, tempo_changes, ticks_per_beat: int) -> float:
     return elapsed + (tick - cursor) / ticks_per_beat * 60.0 / tempo
 
 
-def trim_midi(source: Path, bars: int, velocity: int) -> tuple[miditoolkit.MidiFile, int]:
+def trim_midi(
+    source: Path,
+    bars: int,
+    velocity: int | None = None,
+    target_bpm: float | None = None,
+) -> tuple[miditoolkit.MidiFile, int]:
     midi = miditoolkit.MidiFile(str(source))
     limit_tick = bars * 4 * int(midi.ticks_per_beat)
     for instrument in midi.instruments:
@@ -36,7 +41,8 @@ def trim_midi(source: Path, bars: int, velocity: int) -> tuple[miditoolkit.MidiF
             if int(note.start) >= limit_tick:
                 continue
             note.end = min(int(note.end), limit_tick)
-            note.velocity = velocity
+            if velocity is not None:
+                note.velocity = velocity
             kept_notes.append(note)
         instrument.notes = kept_notes
         instrument.control_changes = [item for item in instrument.control_changes if int(item.time) < limit_tick]
@@ -53,6 +59,8 @@ def trim_midi(source: Path, bars: int, velocity: int) -> tuple[miditoolkit.MidiF
     midi.key_signature_changes = [item for item in midi.key_signature_changes if int(item.time) < limit_tick]
     midi.lyrics = [item for item in midi.lyrics if int(item.time) < limit_tick]
     midi.markers = [item for item in midi.markers if int(item.time) < limit_tick]
+    if target_bpm is not None:
+        midi.tempo_changes = [miditoolkit.TempoChange(target_bpm, 0)]
     midi.max_tick = limit_tick
     return midi, limit_tick
 
@@ -93,7 +101,7 @@ def build_case(midi: miditoolkit.MidiFile, limit_tick: int, bars: int, case_id: 
                 }
             )
     notes.sort(key=lambda item: (item["start"], item["pitch"], item["track"]))
-    initial_bpm = round(float(tempo_changes[0].tempo if tempo_changes else 120.0))
+    initial_bpm = round(float(tempo_changes[0].tempo if tempo_changes else 90.0))
     return {
         "id": case_id,
         "title": f"Accompaniment / {display_id}",
@@ -116,6 +124,7 @@ def main() -> None:
     parser.add_argument("--source", action="append", required=True, type=Path)
     parser.add_argument("--public-dir", required=True, type=Path)
     parser.add_argument("--bars", type=int, default=32)
+    parser.add_argument("--bpm", type=float, default=90.0)
     parser.add_argument("--velocity", type=int, default=80)
     parser.add_argument("--append", action="store_true")
     args = parser.parse_args()
@@ -136,7 +145,9 @@ def main() -> None:
         cases = json.loads(existing[len(prefix):-1])
     for source in args.source:
         case_id = source.stem
-        midi, limit_tick = trim_midi(source.resolve(), args.bars, args.velocity)
+        midi, limit_tick = trim_midi(
+            source.resolve(), args.bars, args.velocity, args.bpm
+        )
         midi.dump(str(midi_dir / f"{case_id}.mid"))
         no_melody = copy.deepcopy(midi)
         no_melody.instruments = [

@@ -39,7 +39,7 @@ const accompaniment: Sample[] = [
 
 function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody?: boolean }) {
   const audio = removeMelody && sample.audioNoMelody ? sample.audioNoMelody : sample.audio;
-  const audioUrl = `${audio}?v=d3pia-sgm-1`;
+  const audioUrl = `${audio}?v=d3pia-sgm-90bpm-1`;
   const midi = removeMelody && sample.midiNoMelody ? sample.midiNoMelody : sample.midi;
   return (
     <article className="audio-case">
@@ -47,7 +47,7 @@ function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody
         <h3>{sample.title}</h3>
         <div className="row-meta">
           {sample.audioNoMelody && <span className="mix-state">{removeMelody ? 'Piano + bridge' : 'Full mix'}</span>}
-          <span>32 bars</span><span>♩ 120 BPM</span>
+          <span>32 bars</span><span>♩ 90 BPM</span>
         </div>
       </div>
       <audio key={audioUrl} className="native-audio" controls preload="metadata" src={audioUrl} />
@@ -61,7 +61,7 @@ function TaskGroup({ index, eyebrow, title, description, samples, removeMelody=f
     <section className="task-group">
       <div className="task-heading">
         <div><p className="case-label">{index} / {eyebrow}</p><h2>{title}</h2><p>{description}</p></div>
-        <div className="task-actions">{children}<div className="chips"><span>32 BARS</span><span>♩ 120 BPM</span><span>FLAC · LOSSLESS</span></div></div>
+        <div className="task-actions">{children}<div className="chips"><span>32 BARS</span><span>♩ 90 BPM</span><span>FLAC · LOSSLESS</span></div></div>
       </div>
       <div className="case-list">{samples.map(sample => <AudioRow key={sample.id} sample={sample} removeMelody={removeMelody} />)}</div>
     </section>

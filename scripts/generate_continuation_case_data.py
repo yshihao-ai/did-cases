@@ -41,13 +41,13 @@ def build_case(midi, limit_tick: int, bars: int, case_id: str) -> dict:
                 }
             )
     notes.sort(key=lambda item: (item["start"], item["pitch"], item["track"]))
-    initial_bpm = round(float(tempo_changes[0].tempo if tempo_changes else 120.0))
+    initial_bpm = round(float(tempo_changes[0].tempo if tempo_changes else 90.0))
     prompt_tick = min(PROMPT_BARS * 4 * ticks_per_beat, limit_tick)
     prompt_duration = round(tick_to_seconds(prompt_tick, tempo_changes, ticks_per_beat), 4)
     return {
         "id": case_id,
         "title": f"Continuation / {case_id}",
-        "description": f"The first {PROMPT_BARS} bars are the prompt; bars {PROMPT_BARS + 1}–{bars} are generated continuation, standardized to 120 BPM for evaluation.",
+        "description": f"The first {PROMPT_BARS} bars are the prompt; bars {PROMPT_BARS + 1}–{bars} are generated continuation, standardized to {initial_bpm} BPM for evaluation.",
         "audio": f"./public/audio/continuation-{case_id}.flac",
         "midi": f"./public/midi/continuation-{case_id}.mid",
         "bpm": initial_bpm,
@@ -66,6 +66,7 @@ def main() -> None:
     parser.add_argument("--source", action="append", required=True, type=Path)
     parser.add_argument("--public-dir", required=True, type=Path)
     parser.add_argument("--bars", type=int, default=32)
+    parser.add_argument("--bpm", type=float, default=90.0)
     parser.add_argument("--append", action="store_true")
     args = parser.parse_args()
     public_dir = args.public_dir.resolve()
@@ -82,8 +83,10 @@ def main() -> None:
             raise ValueError(f"Unexpected continuation data format: {data_path}")
         cases = json.loads(existing[len(prefix):-1])
     for source in args.source:
-        case_id = source.stem
-        midi, limit_tick = trim_midi(source.resolve(), args.bars)
+        case_id = source.stem.removeprefix("continuation-")
+        midi, limit_tick = trim_midi(
+            source.resolve(), args.bars, target_bpm=args.bpm
+        )
         midi.dump(str(midi_dir / f"continuation-{case_id}.mid"))
         cases[case_id] = build_case(midi, limit_tick, args.bars, case_id)
     payload = json.dumps(cases, ensure_ascii=False, separators=(",", ":"))
