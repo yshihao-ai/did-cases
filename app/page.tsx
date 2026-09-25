@@ -30,9 +30,14 @@ const chord: Sample[] = [
 
 const accompaniment: Sample[] = [
   { id:'057', title:'Accompaniment / 057', audio:'/audio/accompaniment-057.mp3', midi:'/midi/057.mid', audioNoMelody:'/audio/accompaniment-057-no-melody.mp3', midiNoMelody:'/midi/057-no-melody.mid' },
+  { id:'125', title:'Accompaniment / 125', audio:'/audio/accompaniment-125.mp3', midi:'/midi/125.mid', audioNoMelody:'/audio/accompaniment-125-no-melody.mp3', midiNoMelody:'/midi/125-no-melody.mid' },
+  { id:'129', title:'Accompaniment / 129', audio:'/audio/accompaniment-129.mp3', midi:'/midi/129.mid', audioNoMelody:'/audio/accompaniment-129-no-melody.mp3', midiNoMelody:'/midi/129-no-melody.mid' },
+  { id:'264', title:'Accompaniment / 264', audio:'/audio/accompaniment-264.mp3', midi:'/midi/264.mid', audioNoMelody:'/audio/accompaniment-264-no-melody.mp3', midiNoMelody:'/midi/264-no-melody.mid' },
   { id:'283', title:'Accompaniment / 283', audio:'/audio/accompaniment-283.mp3', midi:'/midi/283.mid', audioNoMelody:'/audio/accompaniment-283-no-melody.mp3', midiNoMelody:'/midi/283-no-melody.mid' },
   { id:'290', title:'Accompaniment / 290', audio:'/audio/accompaniment-290.mp3', midi:'/midi/290.mid', audioNoMelody:'/audio/accompaniment-290-no-melody.mp3', midiNoMelody:'/midi/290-no-melody.mid' },
   { id:'346', title:'Accompaniment / 346', audio:'/audio/accompaniment-346.mp3', midi:'/midi/346.mid', audioNoMelody:'/audio/accompaniment-346-no-melody.mp3', midiNoMelody:'/midi/346-no-melody.mid' },
+  { id:'720', title:'Accompaniment / 720', audio:'/audio/accompaniment-720.mp3', midi:'/midi/720.mid', audioNoMelody:'/audio/accompaniment-720-no-melody.mp3', midiNoMelody:'/midi/720-no-melody.mid' },
+  { id:'748', title:'Accompaniment / 748', audio:'/audio/accompaniment-748.mp3', midi:'/midi/748.mid', audioNoMelody:'/audio/accompaniment-748-no-melody.mp3', midiNoMelody:'/midi/748-no-melody.mid' },
 ];
 
 function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody?: boolean }) {
