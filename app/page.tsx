@@ -42,6 +42,7 @@ const accompaniment: Sample[] = [
 
 function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody?: boolean }) {
   const audio = removeMelody && sample.audioNoMelody ? sample.audioNoMelody : sample.audio;
+  const audioUrl = `${audio}?v=generaluser-1`;
   const midi = removeMelody && sample.midiNoMelody ? sample.midiNoMelody : sample.midi;
   return (
     <article className="audio-case">
@@ -52,8 +53,8 @@ function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody
           <span>32 bars</span><span>♩ 120 BPM</span>
         </div>
       </div>
-      <audio key={audio} className="native-audio" controls preload="metadata" src={audio} />
-      <div className="row-meta"><a className="download" href={audio} download>MP3</a><a className="download" href={midi} download>MIDI</a></div>
+      <audio key={audioUrl} className="native-audio" controls preload="metadata" src={audioUrl} />
+      <div className="row-meta"><a className="download" href={audioUrl} download>MP3</a><a className="download" href={midi} download>MIDI</a></div>
     </article>
   );
 }

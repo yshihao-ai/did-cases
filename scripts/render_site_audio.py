@@ -13,7 +13,7 @@ import subprocess
 from typing import Any
 
 
-EXPECTED_SOUNDFONT_SHA256 = "5ea2375e8bd7d8e71def1036978c1621e85b66934169b6a2744b27b9b3c2d99c"
+EXPECTED_SOUNDFONT_SHA256 = "9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe"
 
 
 def file_sha256(path: Path) -> str:
