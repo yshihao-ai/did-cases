@@ -126,6 +126,7 @@ def main() -> None:
     parser.add_argument("--ffmpeg", required=True, type=Path)
     parser.add_argument("--soundfont", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path)
+    parser.add_argument("--append-manifest", action="store_true")
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
 
@@ -183,6 +184,11 @@ def main() -> None:
         "soundfont_sha256": soundfont_hash,
         "files": results,
     }
+    if args.append_manifest and args.manifest.exists():
+        existing = json.loads(args.manifest.read_text(encoding="utf-8"))
+        existing_files = {item["audio"]: item for item in existing.get("files", [])}
+        existing_files.update({item["audio"]: item for item in results})
+        manifest["files"] = [existing_files[name] for name in sorted(existing_files, key=str.casefold)]
     args.manifest.parent.mkdir(parents=True, exist_ok=True)
     args.manifest.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 

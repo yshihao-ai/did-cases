@@ -19,6 +19,7 @@ def prepare_midi(source: Path, destination: Path, target_bpm: float, bars: int) 
     for track_index, track in enumerate(midi.tracks):
         absolute = 0
         kept: list[tuple[int, Any]] = []
+        active_notes: dict[tuple[int, int], int] = {}
         for message in track:
             absolute += message.time
             if message.type == "set_tempo":
@@ -27,8 +28,22 @@ def prepare_midi(source: Path, destination: Path, target_bpm: float, bars: int) 
                 velocities.append(message.velocity)
             if message.type in {"set_tempo", "time_signature", "end_of_track"}:
                 continue
+            is_note_on = message.type == "note_on" and message.velocity > 0
+            is_note_off = message.type == "note_off" or (message.type == "note_on" and message.velocity == 0)
+            note_key = (message.channel, message.note) if message.type in {"note_on", "note_off"} else None
             if absolute <= target_ticks:
                 kept.append((absolute, message.copy(time=0)))
+                if is_note_on and note_key is not None:
+                    active_notes[note_key] = active_notes.get(note_key, 0) + 1
+                elif is_note_off and note_key is not None and active_notes.get(note_key, 0):
+                    active_notes[note_key] -= 1
+            elif is_note_off and note_key is not None and active_notes.get(note_key, 0):
+                kept.append((target_ticks, message.copy(time=0)))
+                active_notes[note_key] -= 1
+
+        for (channel, note), count in active_notes.items():
+            for _ in range(count):
+                kept.append((target_ticks, mido.Message("note_off", channel=channel, note=note, velocity=0, time=0)))
 
         if track_index == 0:
             kept.append((0, mido.MetaMessage("set_tempo", tempo=mido.bpm2tempo(target_bpm), time=0)))
