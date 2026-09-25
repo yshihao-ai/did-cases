@@ -6,14 +6,14 @@
   <title>DID — Symbolic Music Generation Case Studies</title>
   <meta name="description" content="Case studies for DID: 2D Autoregressive Modeling with a Decoder-in-Decoder Architecture for Symbolic Music Generation." />
   <meta property="og:title" content="DID — Symbolic Music Generation Case Studies" />
-  <meta property="og:description" content="Continuation, chord-to-music, and accompaniment generation with synchronized multi-track piano rolls." />
+  <meta property="og:description" content="Audio examples for continuation, chord-to-music, and accompaniment generation." />
   <meta property="og:image" content="https://yshihao-ai.github.io/did-cases/public/og.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="DID — Symbolic Music Generation Case Studies" />
-  <meta name="twitter:description" content="Continuation, chord-to-music, and accompaniment generation with synchronized multi-track piano rolls." />
+  <meta name="twitter:description" content="Audio examples for continuation, chord-to-music, and accompaniment generation." />
   <meta name="twitter:image" content="https://yshihao-ai.github.io/did-cases/public/og.png" />
   <link rel="icon" href="./public/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./app/globals.css?v=render-120-lufs-1" />
+  <link rel="stylesheet" href="./app/globals.css?v=audio-only-1" />
 </head>
 <body>
   <header class="site-header">
@@ -30,7 +30,7 @@
     <section class="hero" id="top">
       <p class="kicker">SYMBOLIC MUSIC GENERATION · INTERACTIVE CASE STUDY</p>
       <h1>DID: <em>2D Autoregressive Modeling with a Decoder-in-Decoder Architecture</em></h1>
-      <p class="hero-summary">Continuation, chord-conditioned generation, and accompaniment generation presented through synchronized audio and piano-roll visualization.</p>
+      <p class="hero-summary">Continuation, chord-conditioned generation, and accompaniment generation presented as compact audio case studies.</p>
       <div class="hero-links" aria-label="Quick links">
         <a href="#cases">Explore case studies</a>
         <a href="https://github.com/yshihao-ai/did-cases">Source code</a>
@@ -79,48 +79,23 @@
           </label>
         </div>
 
-        <div class="studio-grid">
-          <aside class="track-panel">
-            <p class="panel-label">Tracks</p>
-            <button class="track-button" data-track="0"><i style="background:#ff6b4a"></i><span><strong>PIANO</strong><small>Piano</small></span><b>On</b></button>
-            <button class="track-button" data-track="1"><i style="background:#b9ff66"></i><span><strong>STRINGS</strong><small>Strings</small></span><b>On</b></button>
-            <button class="track-button" data-track="2"><i style="background:#70c8ff"></i><span><strong>BASS</strong><small>Bass</small></span><b>On</b></button>
-            <div class="prompt-card"><span>Condition</span><p id="case-prompt">Bars 1–4: prompt · bars 5–32: continuation</p></div>
-          </aside>
-
-          <div class="player-column">
-            <div class="visualizer" id="visualizer">
-              <div class="visualizer-top">
-                <span>Piano roll</span>
-                <div class="visualizer-actions">
-                  <div class="piano-legend" id="piano-legend"><span><i class="prompt-color"></i>Prompt · bars 1–4</span><span><i class="continuation-color"></i>Continuation · bars 5–32</span></div>
-                  <div class="view-switch"><button class="active" data-view="waterfall">Falling notes</button><button data-view="timeline">Timeline</button></div>
-                </div>
-              </div>
-              <div class="waterfall" id="waterfall"><div class="now-line"><span>NOW</span></div></div>
-              <div class="roll" id="timeline" hidden><div class="bar-numbers"><span>01</span><span>08</span><span>16</span><span>24</span><span>32</span></div><div class="playhead" id="playhead"><b>0.0s</b></div></div>
-              <div class="keyboard" aria-hidden="true" id="keyboard"></div>
-            </div>
-
-            <div class="transport">
-              <audio id="audio" src="./public/audio/continuation-041.mp3" preload="metadata"></audio>
-              <button class="play" id="play" aria-label="Play">▶</button>
-              <span class="time" id="current-time">00:00.0</span>
-              <input id="progress" aria-label="Playback progress" type="range" min="0" max="15.5" step="0.01" value="0" />
-              <span class="time" id="duration">00:15.5</span>
-              <a class="download" id="download" href="./public/audio/continuation-041.mp3" download>MP3</a>
-              <a class="download" id="midi-download" href="#" download hidden>MIDI</a>
-            </div>
-          </div>
+        <div class="transport audio-only-player">
+          <audio id="audio" src="./public/audio/continuation-041.mp3" preload="metadata"></audio>
+          <button class="play" id="play" aria-label="Play">▶</button>
+          <span class="time" id="current-time">00:00.0</span>
+          <input id="progress" aria-label="Playback progress" type="range" min="0" max="64" step="0.01" value="0" />
+          <span class="time" id="duration">01:04.0</span>
+          <a class="download" id="download" href="./public/audio/continuation-041.mp3" download>MP3</a>
+          <a class="download" id="midi-download" href="#" download hidden>MIDI</a>
         </div>
       </article>
     </section>
   </main>
 
   <footer><span>DID · Symbolic Music Generation</span><span>Interactive case studies</span></footer>
-  <script src="./public/data/continuation-cases.js?v=render-120-lufs-1"></script>
-  <script src="./public/data/chord-cases.js?v=render-120-lufs-1"></script>
-  <script src="./public/data/accompaniment-cases.js?v=render-120-lufs-1"></script>
-  <script src="./static-app.js?v=render-120-lufs-1"></script>
+  <script src="./public/data/continuation-cases.js?v=audio-only-1"></script>
+  <script src="./public/data/chord-cases.js?v=audio-only-1"></script>
+  <script src="./public/data/accompaniment-cases.js?v=audio-only-1"></script>
+  <script src="./static-app.js?v=audio-only-1"></script>
 </body>
 </html>
