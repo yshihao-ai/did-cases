@@ -13,10 +13,7 @@ type Sample = {
 
 const continuation: Sample[] = [
   { id:'007', title:'Continuation / 007', audio:'/audio/continuation-007.mp3', midi:'/midi/continuation-007.mid' },
-  { id:'041', title:'Continuation / 041', audio:'/audio/continuation-041.mp3', midi:'/midi/continuation-041.mid' },
   { id:'053', title:'Continuation / 053', audio:'/audio/continuation-053.mp3', midi:'/midi/continuation-053.mid' },
-  { id:'057', title:'Continuation / 057', audio:'/audio/continuation-057.mp3', midi:'/midi/continuation-057.mid' },
-  { id:'362', title:'Continuation / 362', audio:'/audio/continuation-362.mp3', midi:'/midi/continuation-362.mid' },
   { id:'611', title:'Continuation / 611', audio:'/audio/continuation-611.mp3', midi:'/midi/continuation-611.mid' },
   { id:'690', title:'Continuation / 690', audio:'/audio/continuation-690.mp3', midi:'/midi/continuation-690.mid' },
   { id:'737', title:'Continuation / 737', audio:'/audio/continuation-737.mp3', midi:'/midi/continuation-737.mid' },
