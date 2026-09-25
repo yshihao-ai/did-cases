@@ -27,7 +27,7 @@ def tick_to_seconds(tick: int, tempo_changes, ticks_per_beat: int) -> float:
     return elapsed + (tick - cursor) / ticks_per_beat * 60.0 / tempo
 
 
-def trim_midi(source: Path, bars: int) -> tuple[miditoolkit.MidiFile, int]:
+def trim_midi(source: Path, bars: int, velocity: int) -> tuple[miditoolkit.MidiFile, int]:
     midi = miditoolkit.MidiFile(str(source))
     limit_tick = bars * 4 * int(midi.ticks_per_beat)
     for instrument in midi.instruments:
@@ -36,6 +36,7 @@ def trim_midi(source: Path, bars: int) -> tuple[miditoolkit.MidiFile, int]:
             if int(note.start) >= limit_tick:
                 continue
             note.end = min(int(note.end), limit_tick)
+            note.velocity = velocity
             kept_notes.append(note)
         instrument.notes = kept_notes
         instrument.control_changes = [item for item in instrument.control_changes if int(item.time) < limit_tick]
@@ -115,8 +116,11 @@ def main() -> None:
     parser.add_argument("--source", action="append", required=True, type=Path)
     parser.add_argument("--public-dir", required=True, type=Path)
     parser.add_argument("--bars", type=int, default=32)
+    parser.add_argument("--velocity", type=int, default=80)
     parser.add_argument("--append", action="store_true")
     args = parser.parse_args()
+    if not 1 <= args.velocity <= 127:
+        raise ValueError("Velocity must be between 1 and 127")
     public_dir = args.public_dir.resolve()
     midi_dir = public_dir / "midi"
     data_dir = public_dir / "data"
@@ -132,7 +136,7 @@ def main() -> None:
         cases = json.loads(existing[len(prefix):-1])
     for source in args.source:
         case_id = source.stem
-        midi, limit_tick = trim_midi(source.resolve(), args.bars)
+        midi, limit_tick = trim_midi(source.resolve(), args.bars, args.velocity)
         midi.dump(str(midi_dir / f"{case_id}.mid"))
         no_melody = copy.deepcopy(midi)
         no_melody.instruments = [

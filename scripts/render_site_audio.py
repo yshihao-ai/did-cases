@@ -12,6 +12,8 @@ import shutil
 import subprocess
 from typing import Any
 
+import mido
+
 
 EXPECTED_SOUNDFONT_SHA256 = "9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe"
 
@@ -89,6 +91,23 @@ def output_name(midi: Path) -> str:
     return f"accompaniment-{midi.stem}.flac"
 
 
+def validate_accompaniment_velocity(midi_files: list[Path], expected: int) -> None:
+    for midi_path in midi_files:
+        if midi_path.stem.startswith(("continuation-", "chord-")):
+            continue
+        velocities = {
+            message.velocity
+            for track in mido.MidiFile(midi_path).tracks
+            for message in track
+            if message.type == "note_on" and message.velocity > 0
+        }
+        if velocities != {expected}:
+            raise RuntimeError(
+                f"Expected every note-on velocity in {midi_path.name} to be {expected}, "
+                f"got {sorted(velocities)}"
+            )
+
+
 def process_one(
     midi: Path,
     output_dir: Path,
@@ -127,6 +146,7 @@ def main() -> None:
     parser.add_argument("--ffmpeg", required=True, type=Path)
     parser.add_argument("--soundfont", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path)
+    parser.add_argument("--accompaniment-velocity", type=int)
     parser.add_argument("--append-manifest", action="store_true")
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
@@ -148,6 +168,10 @@ def main() -> None:
     midi_files = sorted(args.midi_dir.glob("*.mid"), key=lambda item: item.name.casefold())
     if not midi_files:
         raise RuntimeError("No MIDI files found")
+    if args.accompaniment_velocity is not None:
+        if not 1 <= args.accompaniment_velocity <= 127:
+            raise ValueError("Accompaniment velocity must be between 1 and 127")
+        validate_accompaniment_velocity(midi_files, args.accompaniment_velocity)
 
     with ThreadPoolExecutor(max_workers=max(1, args.workers)) as executor:
         results = list(
@@ -178,7 +202,11 @@ def main() -> None:
         "time_signature": "4/4",
         "normalization": "whole-file EBU R128 integrated loudness fixed gain; -1.5 dBFS peak limiter",
         "encoding": "FLAC lossless, compression level 8",
-        "velocity_override": None,
+        "velocity_override": {
+            "continuation": None,
+            "chord": None,
+            "accompaniment": args.accompaniment_velocity,
+        },
         "fluidsynth_version": fluidsynth_version,
         "ffmpeg_version": ffmpeg_version,
         "soundfont": args.soundfont.name,

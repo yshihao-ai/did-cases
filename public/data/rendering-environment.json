@@ -7,7 +7,11 @@
   "time_signature": "4/4",
   "normalization": "whole-file EBU R128 integrated loudness fixed gain; -1.5 dBFS peak limiter",
   "encoding": "FLAC lossless, compression level 8",
-  "velocity_override": null,
+  "velocity_override": {
+    "continuation": null,
+    "chord": null,
+    "accompaniment": 80
+  },
   "fluidsynth_version": "FluidSynth runtime version 2.5.7",
   "ffmpeg_version": "ffmpeg version 9.0.1-essentials_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
   "soundfont": "GeneralUser_GS.sf2",
@@ -16,56 +20,56 @@
     {
       "midi": "057-no-melody.mid",
       "audio": "accompaniment-057-no-melody.flac",
-      "input_lufs": -34.3,
-      "gain_db": 18.3,
+      "input_lufs": -34.4,
+      "gain_db": 18.4,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "8ee82dd58b1f8afd176b3744ee86a8235bdefca31a97e9fceaacc277ea480aac"
+      "audio_sha256": "78a063558750e1aa7c615c03179034ead1fcb85b27f73206f196f1f81150659f"
     },
     {
       "midi": "057.mid",
       "audio": "accompaniment-057.flac",
-      "input_lufs": -33.2,
-      "gain_db": 17.2,
+      "input_lufs": -33.3,
+      "gain_db": 17.3,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "ff12e061c290bc2070d283958ce8c8479d979660d3d1bf481ec63dc902f79986"
+      "audio_sha256": "311f2f26820e44b9284d414db507a55a0f9e226aab68db45914fcde0f989b0dd"
     },
     {
       "midi": "125-no-melody.mid",
       "audio": "accompaniment-125-no-melody.flac",
-      "input_lufs": -33.9,
-      "gain_db": 17.9,
+      "input_lufs": -35.2,
+      "gain_db": 19.2,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "5813977056ed93455d3c327aaf66084479322d537774ae2ef3143a697ce3fdba"
+      "audio_sha256": "d199107e95b522d1f055d3b9a7d56e4c665019f489302779f2641cd2d4b36a33"
     },
     {
       "midi": "125.mid",
       "audio": "accompaniment-125.flac",
-      "input_lufs": -31.9,
-      "gain_db": 15.9,
+      "input_lufs": -34.0,
+      "gain_db": 18.0,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "1b5f2162f0a6d45463f787884a30480eba5ae64498311d45c0aeb15d6ac305ce"
+      "audio_sha256": "a1f8aac3fae1b85c530dae3c50fe302426aa3dcca98efead02432c5098d99de5"
     },
     {
       "midi": "129-no-melody.mid",
       "audio": "accompaniment-129-no-melody.flac",
-      "input_lufs": -34.8,
-      "gain_db": 18.8,
+      "input_lufs": -35.4,
+      "gain_db": 19.4,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "f0366ad9ecfaca66da9fd02b3b87441cc0100fe2fdda5f007cc5649daedb33da"
+      "audio_sha256": "64506bf7a2af27af4322bfa48a4b707d3504ecf6f7419bbde318434e352ff44f"
     },
     {
       "midi": "129.mid",
       "audio": "accompaniment-129.flac",
-      "input_lufs": -32.7,
-      "gain_db": 16.7,
+      "input_lufs": -34.2,
+      "gain_db": 18.2,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "4447bc554b02026f0139610d0ed26fa37651b10b7a826c0c3f0e2b6075116321"
+      "audio_sha256": "6e4a628d0123131751b893b56db428208a3b67e17129d308e89ff9957b355d27"
     },
     {
       "midi": "264-no-melody.mid",
@@ -74,106 +78,106 @@
       "gain_db": 18.8,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "bbdc2eab03131d2f76365e5554be8cf43f6dbe2f708481c5f1eca5da1a259405"
+      "audio_sha256": "cf3b5d14300bfa44527ae660a4ffb626ed953a27943876189b448397408fcd76"
     },
     {
       "midi": "264.mid",
       "audio": "accompaniment-264.flac",
-      "input_lufs": -33.8,
-      "gain_db": 17.8,
+      "input_lufs": -34.0,
+      "gain_db": 18.0,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "922e1de4b5fe4f7e208efaef29c5db0b214cd6a0cca03df0fb9665ef1178b60f"
+      "audio_sha256": "45958514363c3ca0fcb3456ad08075338484b0b7dfde6e106cad94e3c1d01ed7"
     },
     {
       "midi": "283-no-melody.mid",
       "audio": "accompaniment-283-no-melody.flac",
-      "input_lufs": -34.5,
-      "gain_db": 18.5,
+      "input_lufs": -34.6,
+      "gain_db": 18.6,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "5a0f63e59d4be8e3e018a76dbecaa68ad358352b9e1ec307e28c6bc4a564f2ed"
+      "audio_sha256": "f699d49bd629a5d928eb56ad18094138c2fded1cb4ccbae79141791a4e9be9ef"
     },
     {
       "midi": "283.mid",
       "audio": "accompaniment-283.flac",
-      "input_lufs": -32.7,
-      "gain_db": 16.7,
+      "input_lufs": -33.4,
+      "gain_db": 17.4,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "2e36045aa3031248d10a0e96876bc143b5b644d0e254c0389e9ae92ee9cea125"
+      "audio_sha256": "bc472178f21deb30ed9ed44228c164967a2f4cadffb64e2a423b543f61b13ab2"
     },
     {
       "midi": "290-no-melody.mid",
       "audio": "accompaniment-290-no-melody.flac",
-      "input_lufs": -34.0,
-      "gain_db": 18.0,
+      "input_lufs": -34.4,
+      "gain_db": 18.4,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "0454547a34a506be8c46da6f1be39ba0af9eacb87d8e484e37e9538ff363fa3c"
+      "audio_sha256": "c3ebd126bfc286bdbfb047506ac0f2b5d423cc9aab83f0d9a3f84355b43d3af2"
     },
     {
       "midi": "290.mid",
       "audio": "accompaniment-290.flac",
-      "input_lufs": -32.4,
-      "gain_db": 16.4,
+      "input_lufs": -33.4,
+      "gain_db": 17.4,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "065154a2a8946670265fdb5e40c77c3e333932b5ac37072b7d0cece6f277febe"
+      "audio_sha256": "cbbd3e973ca4eca3e17e43df79b73f6f20c2100670122e23028fb5506f0f2ad8"
     },
     {
       "midi": "346-no-melody.mid",
       "audio": "accompaniment-346-no-melody.flac",
-      "input_lufs": -32.0,
-      "gain_db": 16.0,
+      "input_lufs": -33.8,
+      "gain_db": 17.8,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "2f305fa92446ab80f832eabab37043e2096e78fe71aeb694da47b0a8a7c30773"
+      "audio_sha256": "21487ec5445b3bec50f2bf131c75e5d5a77aef0cff7cac0ab20dbbdf87f3a5ae"
     },
     {
       "midi": "346.mid",
       "audio": "accompaniment-346.flac",
-      "input_lufs": -31.2,
-      "gain_db": 15.2,
+      "input_lufs": -33.1,
+      "gain_db": 17.1,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "e5a9726288edb8279a38c920932de9977725f193b7a978d00bb9e1c86161fdf7"
+      "audio_sha256": "cb06f91f08c73ce2db3ebddeb4bcfa105c9b5f1d16c8255933b61c869a4f0a3e"
     },
     {
       "midi": "720-no-melody.mid",
       "audio": "accompaniment-720-no-melody.flac",
-      "input_lufs": -34.0,
-      "gain_db": 18.0,
+      "input_lufs": -34.7,
+      "gain_db": 18.7,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "584d206a1b2f0db4face4b48e88697be1bfc31720302e141b746c513583ff613"
+      "audio_sha256": "494d0dec03a4874ea28f233951c9e9a003f9160d7bf8ee7a1b4901d9dd492632"
     },
     {
       "midi": "720.mid",
       "audio": "accompaniment-720.flac",
-      "input_lufs": -32.5,
-      "gain_db": 16.5,
+      "input_lufs": -33.8,
+      "gain_db": 17.8,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "eed9e711581962d64b477aae8def3138778778c82f286e9ab951971520d2fe34"
+      "audio_sha256": "5bd85485dfb14190e4c593d2354b051098a912f314da316739838924c6f3039f"
     },
     {
       "midi": "748-no-melody.mid",
       "audio": "accompaniment-748-no-melody.flac",
-      "input_lufs": -35.0,
-      "gain_db": 19.0,
+      "input_lufs": -34.9,
+      "gain_db": 18.9,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "c0a9efca868fe7524dbb175fe7c97581f769d6592ec468df9cb27b60a4fba3c6"
+      "audio_sha256": "cf318a412f4e087577369fe17362046537355c618c66c13cbc3c074878d2c7f2"
     },
     {
       "midi": "748.mid",
       "audio": "accompaniment-748.flac",
-      "input_lufs": -33.5,
-      "gain_db": 17.5,
+      "input_lufs": -33.9,
+      "gain_db": 17.9,
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
-      "audio_sha256": "93675a47c9a76320e825b4c67480d16ac2cf64a2fa7ba35220db89f73d59a5e3"
+      "audio_sha256": "118dc8cb93878da3c840047eb99406d258c2af89f85480750f33a0182960714e"
     },
     {
       "midi": "chord-283.mid",

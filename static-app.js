@@ -2,7 +2,7 @@ const continuationCases = window.CONTINUATION_CASES || {};
 const chordCases = window.CHORD_CASES || {};
 const accompanimentCases = window.ACCOMPANIMENT_CASES || {};
 const players = [];
-const AUDIO_REVISION = 'flac-1';
+const AUDIO_REVISION = 'accompaniment-velocity-80';
 
 const versionedAudio = source => `${source}${source.includes('?') ? '&' : '?'}v=${AUDIO_REVISION}`;
 
