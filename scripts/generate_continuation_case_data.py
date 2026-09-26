@@ -13,6 +13,12 @@ PROMPT_BARS = 4
 
 
 def build_case(midi, limit_tick: int, bars: int, case_id: str) -> dict:
+    parts = case_id.split("-", 1)
+    if len(parts) == 2 and parts[0].lower() in {"pop909", "pop1k7"}:
+        dataset = "Pop909" if parts[0].lower() == "pop909" else "Pop1k7"
+        display_id = f"{dataset} / {parts[1]}"
+    else:
+        display_id = case_id
     tempo_changes = sorted(midi.tempo_changes, key=lambda item: item.time)
     ticks_per_beat = int(midi.ticks_per_beat)
     notes = []
@@ -46,7 +52,7 @@ def build_case(midi, limit_tick: int, bars: int, case_id: str) -> dict:
     prompt_duration = round(tick_to_seconds(prompt_tick, tempo_changes, ticks_per_beat), 4)
     return {
         "id": case_id,
-        "title": f"Continuation / {case_id}",
+        "title": f"Continuation / {display_id}",
         "description": f"The first {PROMPT_BARS} bars are the prompt; bars {PROMPT_BARS + 1}–{bars} are generated continuation, standardized to {initial_bpm} BPM for evaluation.",
         "audio": f"./public/audio/continuation-{case_id}.flac",
         "midi": f"./public/midi/continuation-{case_id}.mid",

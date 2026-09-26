@@ -166,6 +166,12 @@ def main() -> None:
     parser.add_argument("--target-bpm", type=float, default=90.0)
     parser.add_argument("--accompaniment-velocity", type=int)
     parser.add_argument("--append-manifest", action="store_true")
+    parser.add_argument(
+        "--replace-prefix",
+        action="append",
+        default=[],
+        help="When appending, remove existing manifest entries whose audio filename starts with this prefix.",
+    )
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
 
@@ -236,7 +242,11 @@ def main() -> None:
     }
     if args.append_manifest and args.manifest.exists():
         existing = json.loads(args.manifest.read_text(encoding="utf-8"))
-        existing_files = {item["audio"]: item for item in existing.get("files", [])}
+        existing_files = {
+            item["audio"]: item
+            for item in existing.get("files", [])
+            if not any(item["audio"].startswith(prefix) for prefix in args.replace_prefix)
+        }
         existing_files.update({item["audio"]: item for item in results})
         manifest["files"] = [existing_files[name] for name in sorted(existing_files, key=str.casefold)]
     args.manifest.parent.mkdir(parents=True, exist_ok=True)

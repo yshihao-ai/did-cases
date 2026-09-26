@@ -12,12 +12,14 @@ type Sample = {
 };
 
 const continuation: Sample[] = [
-  { id:'007', title:'Continuation / 007', audio:'/audio/continuation-007.flac', midi:'/midi/continuation-007.mid' },
-  { id:'053', title:'Continuation / 053', audio:'/audio/continuation-053.flac', midi:'/midi/continuation-053.mid' },
-  { id:'611', title:'Continuation / 611', audio:'/audio/continuation-611.flac', midi:'/midi/continuation-611.mid' },
-  { id:'690', title:'Continuation / 690', audio:'/audio/continuation-690.flac', midi:'/midi/continuation-690.mid' },
-  { id:'737', title:'Continuation / 737', audio:'/audio/continuation-737.flac', midi:'/midi/continuation-737.mid' },
-  { id:'870', title:'Continuation / 870', audio:'/audio/continuation-870.flac', midi:'/midi/continuation-870.mid' },
+  { id:'pop1k7-645', title:'Continuation / Pop1k7 / 645', audio:'/audio/continuation-pop1k7-645.flac', midi:'/midi/continuation-pop1k7-645.mid' },
+  { id:'pop909-671', title:'Continuation / Pop909 / 671', audio:'/audio/continuation-pop909-671.flac', midi:'/midi/continuation-pop909-671.mid' },
+  { id:'pop909-720', title:'Continuation / Pop909 / 720', audio:'/audio/continuation-pop909-720.flac', midi:'/midi/continuation-pop909-720.mid' },
+  { id:'pop909-053', title:'Continuation / Pop909 / 053', audio:'/audio/continuation-pop909-053.flac', midi:'/midi/continuation-pop909-053.mid' },
+  { id:'pop909-319', title:'Continuation / Pop909 / 319', audio:'/audio/continuation-pop909-319.flac', midi:'/midi/continuation-pop909-319.mid' },
+  { id:'pop909-558', title:'Continuation / Pop909 / 558', audio:'/audio/continuation-pop909-558.flac', midi:'/midi/continuation-pop909-558.mid' },
+  { id:'pop1k7-1485', title:'Continuation / Pop1k7 / 1485', audio:'/audio/continuation-pop1k7-1485.flac', midi:'/midi/continuation-pop1k7-1485.mid' },
+  { id:'pop909-133', title:'Continuation / Pop909 / 133', audio:'/audio/continuation-pop909-133.flac', midi:'/midi/continuation-pop909-133.mid' },
 ];
 
 const chord: Sample[] = [
@@ -39,7 +41,7 @@ const accompaniment: Sample[] = [
 
 function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody?: boolean }) {
   const audio = removeMelody && sample.audioNoMelody ? sample.audioNoMelody : sample.audio;
-  const audioUrl = `${audio}?v=d3pia-sgm-90bpm-1`;
+  const audioUrl = `${audio}?v=continuation-top8-1`;
   const midi = removeMelody && sample.midiNoMelody ? sample.midiNoMelody : sample.midi;
   return (
     <article className="audio-case">
