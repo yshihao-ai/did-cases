@@ -2,4 +2,4 @@
 
 Interactive case-study website for music continuation, chord-to-music generation, and accompaniment generation.
 
-Site: https://yshihao-ai.github.io/did-cases/
+The anonymous review URL is distributed separately.
