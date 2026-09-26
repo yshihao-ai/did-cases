@@ -14,7 +14,6 @@ type Sample = {
 const continuation: Sample[] = [
   { id:'pop1k7-645', title:'Continuation / Pop1k7 / 645', audio:'/audio/continuation-pop1k7-645.flac', midi:'/midi/continuation-pop1k7-645.mid' },
   { id:'pop909-671', title:'Continuation / Pop909 / 671', audio:'/audio/continuation-pop909-671.flac', midi:'/midi/continuation-pop909-671.mid' },
-  { id:'pop909-720', title:'Continuation / Pop909 / 720', audio:'/audio/continuation-pop909-720.flac', midi:'/midi/continuation-pop909-720.mid' },
   { id:'pop909-053', title:'Continuation / Pop909 / 053', audio:'/audio/continuation-pop909-053.flac', midi:'/midi/continuation-pop909-053.mid' },
   { id:'pop909-319', title:'Continuation / Pop909 / 319', audio:'/audio/continuation-pop909-319.flac', midi:'/midi/continuation-pop909-319.mid' },
   { id:'pop909-558', title:'Continuation / Pop909 / 558', audio:'/audio/continuation-pop909-558.flac', midi:'/midi/continuation-pop909-558.mid' },
@@ -41,7 +40,7 @@ const accompaniment: Sample[] = [
 
 function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody?: boolean }) {
   const audio = removeMelody && sample.audioNoMelody ? sample.audioNoMelody : sample.audio;
-  const audioUrl = `${audio}?v=continuation-top8-1`;
+  const audioUrl = `${audio}?v=continuation-listenability-1`;
   const midi = removeMelody && sample.midiNoMelody ? sample.midiNoMelody : sample.midi;
   return (
     <article className="audio-case">

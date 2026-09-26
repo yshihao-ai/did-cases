@@ -261,15 +261,6 @@
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
       "audio_sha256": "77ff320c711dc2c7dd50653b3957673d6fa12d36ae184890e99cd58b898d8c49"
-    },
-    {
-      "midi": "continuation-pop909-720.mid",
-      "audio": "continuation-pop909-720.flac",
-      "input_lufs": -30.0,
-      "gain_db": 14.0,
-      "normalized_lufs": -16.0,
-      "encoded_lufs": -16.0,
-      "audio_sha256": "5b884e0fbd25161f2503fc0b7db2a65d0ed3c8d3f5197e105aeeb7bd3407cda2"
     }
   ]
 }
