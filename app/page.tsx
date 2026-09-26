@@ -24,6 +24,12 @@ const continuation: Sample[] = [
   { id:'pop909-874', title:'Continuation / Pop909 / 874', audio:'/audio/continuation-pop909-874.flac', midi:'/midi/continuation-pop909-874.mid' },
   { id:'pop909-662', title:'Continuation / Pop909 / 662', audio:'/audio/continuation-pop909-662.flac', midi:'/midi/continuation-pop909-662.mid' },
   { id:'pop1k7-1486', title:'Continuation / Pop1k7 / 1486', audio:'/audio/continuation-pop1k7-1486.flac', midi:'/midi/continuation-pop1k7-1486.mid' },
+  { id:'pop1k7-1452', title:'Continuation / Pop1k7 / 1452', audio:'/audio/continuation-pop1k7-1452.flac', midi:'/midi/continuation-pop1k7-1452.mid' },
+  { id:'pop1k7-149', title:'Continuation / Pop1k7 / 149', audio:'/audio/continuation-pop1k7-149.flac', midi:'/midi/continuation-pop1k7-149.mid' },
+  { id:'pop1k7-851', title:'Continuation / Pop1k7 / 851', audio:'/audio/continuation-pop1k7-851.flac', midi:'/midi/continuation-pop1k7-851.mid' },
+  { id:'pop1k7-673', title:'Continuation / Pop1k7 / 673', audio:'/audio/continuation-pop1k7-673.flac', midi:'/midi/continuation-pop1k7-673.mid' },
+  { id:'pop1k7-916', title:'Continuation / Pop1k7 / 916', audio:'/audio/continuation-pop1k7-916.flac', midi:'/midi/continuation-pop1k7-916.mid' },
+  { id:'pop1k7-1680', title:'Continuation / Pop1k7 / 1680', audio:'/audio/continuation-pop1k7-1680.flac', midi:'/midi/continuation-pop1k7-1680.mid' },
 ];
 
 const chord: Sample[] = [
@@ -45,7 +51,7 @@ const accompaniment: Sample[] = [
 
 function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody?: boolean }) {
   const audio = removeMelody && sample.audioNoMelody ? sample.audioNoMelody : sample.audio;
-  const audioUrl = `${audio}?v=continuation-top12-1`;
+  const audioUrl = `${audio}?v=continuation-pop1k7-plus6-1`;
   const midi = removeMelody && sample.midiNoMelody ? sample.midiNoMelody : sample.midi;
   return (
     <article className="audio-case">

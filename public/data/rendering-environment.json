@@ -200,6 +200,15 @@
       "audio_sha256": "279ec8fc96528055074146b0a3320ff0da873fab25d7a143a52f1090784e8936"
     },
     {
+      "midi": "continuation-pop1k7-1452.mid",
+      "audio": "continuation-pop1k7-1452.flac",
+      "input_lufs": -38.0,
+      "gain_db": 22.0,
+      "normalized_lufs": -16.0,
+      "encoded_lufs": -16.0,
+      "audio_sha256": "0957991fb2a34e266790a12be6db8389822a226d89024ba0a15e8aaccb6cae65"
+    },
+    {
       "midi": "continuation-pop1k7-1485.mid",
       "audio": "continuation-pop1k7-1485.flac",
       "input_lufs": -40.8,
@@ -218,6 +227,24 @@
       "audio_sha256": "97dde9d7fbf6c225e85d2f8f8367478026808abbcf337eda5bd4fdc4fd022614"
     },
     {
+      "midi": "continuation-pop1k7-149.mid",
+      "audio": "continuation-pop1k7-149.flac",
+      "input_lufs": -38.7,
+      "gain_db": 22.7,
+      "normalized_lufs": -16.0,
+      "encoded_lufs": -16.0,
+      "audio_sha256": "0f9482b8511bd18cfbc782a8bb65e7f8ba2bc54be60bdd4a2ca156e3b68d8818"
+    },
+    {
+      "midi": "continuation-pop1k7-1680.mid",
+      "audio": "continuation-pop1k7-1680.flac",
+      "input_lufs": -40.9,
+      "gain_db": 24.9,
+      "normalized_lufs": -16.0,
+      "encoded_lufs": -16.0,
+      "audio_sha256": "81f75e2e2e6aea63c63ca0a8d82f4be07f50f62156df8f5d88c08573c15781bf"
+    },
+    {
       "midi": "continuation-pop1k7-645.mid",
       "audio": "continuation-pop1k7-645.flac",
       "input_lufs": -37.8,
@@ -225,6 +252,33 @@
       "normalized_lufs": -16.0,
       "encoded_lufs": -16.0,
       "audio_sha256": "3ba021133559c3c17a5a9133ba31be612f90dbcbf8c86da638d6067f3934e870"
+    },
+    {
+      "midi": "continuation-pop1k7-673.mid",
+      "audio": "continuation-pop1k7-673.flac",
+      "input_lufs": -41.5,
+      "gain_db": 25.5,
+      "normalized_lufs": -16.1,
+      "encoded_lufs": -16.1,
+      "audio_sha256": "2993aaf831d5a408ca49cb90e5b21d707903cdcb85945868443f49039eaae208"
+    },
+    {
+      "midi": "continuation-pop1k7-851.mid",
+      "audio": "continuation-pop1k7-851.flac",
+      "input_lufs": -39.0,
+      "gain_db": 23.0,
+      "normalized_lufs": -16.0,
+      "encoded_lufs": -16.0,
+      "audio_sha256": "aa5f48d15fa95016435fe8deb35b4f831a652026a4bc65397cfe955d9c6fa430"
+    },
+    {
+      "midi": "continuation-pop1k7-916.mid",
+      "audio": "continuation-pop1k7-916.flac",
+      "input_lufs": -40.6,
+      "gain_db": 24.6,
+      "normalized_lufs": -16.0,
+      "encoded_lufs": -16.0,
+      "audio_sha256": "deb2845abbd49bac7c2caa7f171a28892079ccd545c09a7ad9f1c061bb4433b3"
     },
     {
       "midi": "continuation-pop909-053.mid",
