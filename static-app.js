@@ -2,7 +2,7 @@ const continuationCases = window.CONTINUATION_CASES || {};
 const chordCases = window.CHORD_CASES || {};
 const accompanimentCases = window.ACCOMPANIMENT_CASES || {};
 const players = [];
-const AUDIO_REVISION = 'continuation-pop1k7-plus6-1';
+const AUDIO_REVISION = 'continuation-remove-133-837-1';
 
 const versionedAudio = source => `${source}${source.includes('?') ? '&' : '?'}v=${AUDIO_REVISION}`;
 

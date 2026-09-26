@@ -14,9 +14,7 @@ type Sample = {
 const continuation: Sample[] = [
   { id:'pop1k7-645', title:'Continuation / Pop1k7 / 645', audio:'/audio/continuation-pop1k7-645.flac', midi:'/midi/continuation-pop1k7-645.mid' },
   { id:'pop909-671', title:'Continuation / Pop909 / 671', audio:'/audio/continuation-pop909-671.flac', midi:'/midi/continuation-pop909-671.mid' },
-  { id:'pop909-133', title:'Continuation / Pop909 / 133', audio:'/audio/continuation-pop909-133.flac', midi:'/midi/continuation-pop909-133.mid' },
   { id:'pop909-319', title:'Continuation / Pop909 / 319', audio:'/audio/continuation-pop909-319.flac', midi:'/midi/continuation-pop909-319.mid' },
-  { id:'pop909-837', title:'Continuation / Pop909 / 837', audio:'/audio/continuation-pop909-837.flac', midi:'/midi/continuation-pop909-837.mid' },
   { id:'pop909-053', title:'Continuation / Pop909 / 053', audio:'/audio/continuation-pop909-053.flac', midi:'/midi/continuation-pop909-053.mid' },
   { id:'pop1k7-1485', title:'Continuation / Pop1k7 / 1485', audio:'/audio/continuation-pop1k7-1485.flac', midi:'/midi/continuation-pop1k7-1485.mid' },
   { id:'pop909-705', title:'Continuation / Pop909 / 705', audio:'/audio/continuation-pop909-705.flac', midi:'/midi/continuation-pop909-705.mid' },
@@ -51,7 +49,7 @@ const accompaniment: Sample[] = [
 
 function AudioRow({ sample, removeMelody=false }: { sample: Sample; removeMelody?: boolean }) {
   const audio = removeMelody && sample.audioNoMelody ? sample.audioNoMelody : sample.audio;
-  const audioUrl = `${audio}?v=continuation-pop1k7-plus6-1`;
+  const audioUrl = `${audio}?v=continuation-remove-133-837-1`;
   const midi = removeMelody && sample.midiNoMelody ? sample.midiNoMelody : sample.midi;
   return (
     <article className="audio-case">
